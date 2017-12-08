@@ -4,6 +4,7 @@ import {CoursesComponent} from './courses.component';
 import {CourseComponent} from './course/course.component';
 import {ToolbarComponent} from './toolbar/toolbar.component';
 import {MatCardModule} from "@angular/material";
+import {FormsModule} from "@angular/forms";
 
 describe('CoursesComponent', () => {
   let component: CoursesComponent;
@@ -11,7 +12,7 @@ describe('CoursesComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [MatCardModule],
+      imports: [MatCardModule, FormsModule],
       declarations: [CoursesComponent, CourseComponent, ToolbarComponent]
     })
       .compileComponents();

@@ -1,4 +1,7 @@
-import {Component, OnInit, Input, EventEmitter, Output} from '@angular/core';
+import {
+  Component, OnInit, OnChanges, OnDestroy, DoCheck, Input, EventEmitter, Output,
+  SimpleChanges, AfterViewChecked, AfterViewInit, AfterContentInit, AfterContentChecked,
+} from '@angular/core';
 import {Course} from "../../../services/courses/course";
 
 @Component({
@@ -6,9 +9,10 @@ import {Course} from "../../../services/courses/course";
   templateUrl: './course.component.html',
   styleUrls: ['./course.component.css']
 })
-export class CourseComponent implements OnInit {
+export class CourseComponent implements OnInit, OnDestroy, OnChanges, DoCheck, AfterViewChecked, AfterViewInit, AfterContentInit, AfterContentChecked {
+  private nextId: number = 0;
 
-  @Output('delete') deleteCourse = new EventEmitter();
+  @Output('delete') deleteCourseEmitter = new EventEmitter();
   @Input('course') course: Course = {
     id: 0,
     description: '',
@@ -21,13 +25,46 @@ export class CourseComponent implements OnInit {
   constructor() {
   }
 
-  ngOnInit() {
-  }
-
-  delete() {
-    this.deleteCourse.emit({
+  deleteCourse() {
+    this.deleteCourseEmitter.emit({
       id: this.course.id
     });
   }
 
+  ngOnInit(): void {
+    this.logIt('OnInit');
+  }
+
+  ngOnDestroy(): void {
+    this.logIt('OnDestroy');
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    this.logIt(`OnChanges - ${changes}`);
+  }
+
+  ngDoCheck(): void {
+    this.logIt('DoCheck');
+  }
+
+  ngAfterViewChecked(): void {
+    this.logIt('AfterViewChecked');
+  }
+
+  ngAfterViewInit(): void {
+    this.logIt('AfterViewInit');
+  }
+
+  ngAfterContentInit(): void {
+    this.logIt('AfterContentInit');
+  }
+
+  ngAfterContentChecked(): void {
+    this.logIt('AfterContentChecked');
+  }
+
+  private logIt(msg: string) {
+    // TODO inject logger service
+    console.log(`Course ${this.course.id}: #${this.nextId++} ${msg}`);
+  }
 }

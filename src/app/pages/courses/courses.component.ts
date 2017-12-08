@@ -20,6 +20,10 @@ export class CoursesComponent implements OnInit {
   ngOnInit() {
   }
 
+  trackById(index: number, course: Course): number {
+    return course.id;
+  }
+
   deleteCourse($event) {
     console.log(`deleting course ${$event.id}`);
   }

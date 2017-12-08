@@ -1,2 +1,2 @@
 <courses-toolbar></courses-toolbar>
-<course-card *ngFor="let aCourse of courses" [course]="aCourse" (delete)="deleteCourse($event);" ></course-card>
+<course-card *ngFor="let aCourse of courses; trackBy: trackById" [course]="aCourse" (delete)="deleteCourse($event);" ></course-card>
