@@ -1,5 +1,6 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatToolbarModule} from '@angular/material';
 import {MatCardModule} from '@angular/material';
 
@@ -31,7 +32,8 @@ import {AboutComponent} from './pages/about/about.component';
     BrowserModule,
     MatToolbarModule,
     MatCardModule,
-    AppRoutingModule
+    AppRoutingModule,
+    FormsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

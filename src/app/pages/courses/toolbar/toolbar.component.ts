@@ -6,10 +6,17 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./toolbar.component.css']
 })
 export class ToolbarComponent implements OnInit {
+  courseParam: string;
 
-  constructor() { }
+  constructor() {
+    this.courseParam = 'Enter name fragment or date...';
+  }
 
   ngOnInit() {
+  }
+
+  findCourses() {
+    console.log(`searching for course: ${this.courseParam}`);
   }
 
 }

@@ -1,3 +1,9 @@
+courses-toolbar {
+  display: block;
+  width: 100%;
+  margin: 1em 1em 0 1em;
+}
+
 course-card {
-  margin: 5em;
+  margin: 1em;
 }
