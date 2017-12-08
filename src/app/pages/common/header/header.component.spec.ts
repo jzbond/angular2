@@ -1,6 +1,9 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {MatToolbarModule} from '@angular/material';
 
-import { HeaderComponent } from './header.component';
+import {LogoComponent} from '../logo/logo.component';
+import {LoginComponent} from '../../login/login.component';
+import {HeaderComponent} from './header.component';
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;
@@ -8,9 +11,10 @@ describe('HeaderComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ HeaderComponent ]
+      imports: [MatToolbarModule],
+      declarations: [HeaderComponent, LogoComponent, LoginComponent,]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
