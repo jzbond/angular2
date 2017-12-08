@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {Course} from './course';
 
 @Injectable()
-export class CourcesService {
+export class CoursesService {
 
   constructor() {
   }
@@ -10,25 +10,28 @@ export class CourcesService {
   public listCourses(): Array<Course> {
     return [
       {
-        name: 'Angular 2',
+        id: 1,
+        name: 'Angular 2 Basics',
         description: 'Introduction to Angular 2',
         type: 'video',
         date: new Date(),
-        durationInSeconds: 2*60*60,
+        durationInSeconds: 2.5 * 60 * 60,
       },
       {
-        name: 'Angular Materials',
+        id: 2,
+        name: 'Angular Materials Basics',
         description: 'Introduction to Angular Materials',
         type: 'video',
         date: new Date(),
-        durationInSeconds: 1*60*60,
+        durationInSeconds: 0.75 * 60 * 60,
       },
       {
-        name: 'TypeScript',
+        id: 3,
+        name: 'TypeScript Basics',
         description: 'Introduction to TypeScript',
         type: 'video',
         date: new Date(),
-        durationInSeconds: 2*60*60,
+        durationInSeconds: 1.5 * 60 * 60,
       }
     ];
   }

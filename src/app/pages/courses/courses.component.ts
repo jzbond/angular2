@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {CoursesService} from "../../services/courses/courses.service";
+import {Course} from "../../services/courses/course";
 
 @Component({
   selector: 'courses',
@@ -7,9 +9,19 @@ import { Component, OnInit } from '@angular/core';
 })
 export class CoursesComponent implements OnInit {
 
-  constructor() { }
+  private coursesService: CoursesService;
+  courses: Array<Course>;
+
+  constructor() {
+    this.coursesService = new CoursesService();
+    this.courses = this.coursesService.listCourses();
+  }
 
   ngOnInit() {
+  }
+
+  deleteCourse($event) {
+    console.log(`deleting course ${$event.id}`);
   }
 
 }

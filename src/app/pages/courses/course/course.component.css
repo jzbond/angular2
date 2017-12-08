@@ -1,0 +1,11 @@
+mat-card-title-group {
+  flex: 1 1 auto;
+}
+
+mat-card-title {
+  font-weight: bold;
+}
+
+mat-card-content {
+  flex: auto 1;
+}

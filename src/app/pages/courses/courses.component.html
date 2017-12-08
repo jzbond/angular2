@@ -1,3 +1,2 @@
-<p>
-  courses works!
-</p>
+<courses-toolbar></courses-toolbar>
+<course-card *ngFor="let aCourse of courses" [course]="aCourse" (delete)="deleteCourse($event);" ></course-card>
