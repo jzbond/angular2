@@ -6,6 +6,22 @@ mat-card-title {
   font-weight: bold;
 }
 
-mat-card-content {
-  flex: auto 1;
+mat-card-actions {
+  display: inline;
+}
+
+.info {
+  float: left;
+  width: 80%;
+}
+
+.action {
+  float: right;
+  width: 5em;
+}
+
+mat-card:after {
+  content: "";
+  display: table;
+  clear: both;
 }
