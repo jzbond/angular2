@@ -14,10 +14,10 @@ export class CoursesComponent implements OnInit {
 
   constructor() {
     this.coursesService = new CoursesService();
-    this.courses = this.coursesService.listCourses();
   }
 
   ngOnInit() {
+    this.refreshCoursesList();
   }
 
   trackById(index: number, course: Course): number {
@@ -25,7 +25,12 @@ export class CoursesComponent implements OnInit {
   }
 
   deleteCourse($event) {
-    console.log(`deleting course ${$event.id}`);
+    this.coursesService.removeCourse($event.id);
+    this.refreshCoursesList();
+  }
+
+  private refreshCoursesList() {
+    this.courses = this.coursesService.listCourses();
   }
 
 }
