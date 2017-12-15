@@ -27,7 +27,8 @@ export class CourseComponent implements OnInit, OnDestroy, OnChanges, DoCheck, A
 
   deleteCourse() {
     this.deleteCourseEmitter.emit({
-      id: this.course.id
+      id: this.course.id,
+      name: this.course.name
     });
   }
 

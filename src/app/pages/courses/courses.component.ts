@@ -1,6 +1,7 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {CoursesService} from "../../services/courses/courses.service";
 import {Course} from "../../services/courses/course";
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 
 @Component({
   selector: 'courses',
@@ -12,7 +13,7 @@ export class CoursesComponent implements OnInit {
   private coursesService: CoursesService;
   courses: Array<Course>;
 
-  constructor() {
+  constructor(public dialog: MatDialog) {
     this.coursesService = new CoursesService();
   }
 
@@ -25,12 +26,37 @@ export class CoursesComponent implements OnInit {
   }
 
   deleteCourse($event) {
-    this.coursesService.removeCourse($event.id);
-    this.refreshCoursesList();
+
+    let dialogRef = this.dialog.open(CoursesConfirmationDialog, {
+      data: {name: $event.name},
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.coursesService.removeCourse($event.id);
+        this.refreshCoursesList();
+      }
+    });
   }
 
   private refreshCoursesList() {
     this.courses = this.coursesService.listCourses();
   }
 
+}
+
+@Component({
+  selector: 'courses-confirmation-dialog',
+  templateUrl: 'courses.component.dialog.html',
+  styles: ['button {margin: 5px;}'],
+})
+export class CoursesConfirmationDialog {
+
+  constructor(public dialogRef: MatDialogRef<CoursesConfirmationDialog>,
+              @Inject(MAT_DIALOG_DATA) public data: any) {
+  }
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
 }
