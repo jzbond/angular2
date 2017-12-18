@@ -8,19 +8,21 @@ export class AuthorizationService {
   constructor() {
   }
 
-  public login(login: string, password: string) {
+  public login(login: string, password: string): void {
     localStorage.setItem(AuthorizationService.USER_TOKEN, JSON.stringify({login, password}));
+    console.log(`User ${login} logged in`);
   }
 
-  public logout() {
+  public logout(): void {
     localStorage.removeItem(AuthorizationService.USER_TOKEN);
+    console.log(`User ${this.getUserInfo()} logged out`);
   }
 
   public isAuthenticated(): boolean {
     return localStorage.getItem(AuthorizationService.USER_TOKEN) != null;
   }
 
-  public getUserInfo() {
+  public getUserInfo(): string {
     return this.isAuthenticated() ? JSON.parse(localStorage.getItem(AuthorizationService.USER_TOKEN)).login : null;
   }
 }

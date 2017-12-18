@@ -1,0 +1,4 @@
+<div class="info" *ngIf="isAuthorized()">
+  <div>{{getAuthUser()}}</div>
+  <button mat-button (click)="logout()">Logoff</button>
+</div>

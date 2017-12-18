@@ -9,6 +9,10 @@ describe('AuthorizationService', () => {
     });
   });
 
+  afterEach(() => {
+    localStorage.clear();
+  });
+
   it('should be created', inject([AuthorizationService], (service: AuthorizationService) => {
     expect(service).toBeTruthy();
   }));
