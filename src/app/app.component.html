@@ -1,3 +1,4 @@
 <app-header></app-header>
-<router-outlet></router-outlet>
+<login-page *ngIf="!isAuthorized()"></login-page>
+<courses *ngIf="isAuthorized()"></courses>
 <app-footer></app-footer>

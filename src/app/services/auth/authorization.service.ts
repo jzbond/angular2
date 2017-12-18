@@ -9,8 +9,10 @@ export class AuthorizationService {
   }
 
   public login(login: string, password: string): void {
-    localStorage.setItem(AuthorizationService.USER_TOKEN, JSON.stringify({login, password}));
-    console.log(`User ${login} logged in`);
+    if (login) {
+      localStorage.setItem(AuthorizationService.USER_TOKEN, JSON.stringify({login, password}));
+      console.log(`User ${login} logged in`);
+    }
   }
 
   public logout(): void {
