@@ -6,6 +6,7 @@ import {ToolbarComponent} from './toolbar/toolbar.component';
 import {MatCardModule} from "@angular/material";
 import {MatDialogModule} from "@angular/material/dialog";
 import {FormsModule} from "@angular/forms";
+import {HighlightByDateDirective} from "./course/highlight-by-date.directive";
 
 describe('CoursesComponent', () => {
   let component: CoursesComponent;
@@ -14,7 +15,7 @@ describe('CoursesComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [MatCardModule, MatDialogModule, FormsModule],
-      declarations: [CoursesComponent, CourseComponent, ToolbarComponent]
+      declarations: [CoursesComponent, CourseComponent, ToolbarComponent, HighlightByDateDirective]
     })
       .compileComponents();
   }));

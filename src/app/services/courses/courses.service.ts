@@ -33,7 +33,15 @@ export class CoursesService {
         type: 'video',
         date: new Date(Date.UTC(2018, 4, 10)),
         durationInSeconds: 1.5 * 60 * 60,
-      }]
+      }],
+      [4, {
+        id: 4,
+        name: 'JavaScript Basics',
+        description: 'Introduction to JavaScript',
+        type: 'video',
+        date: new Date(Date.UTC(2017, 2, 8)),
+        durationInSeconds: 2.5 * 60 * 60,
+      }],
     ]);
   }
 

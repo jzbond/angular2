@@ -14,10 +14,11 @@ describe('CoursesService', () => {
   }));
 
   it('should return courses', inject([CoursesService], (service: CoursesService) => {
-    expect(service.listCourses().length).toBe(3);
+    expect(service.listCourses().length).toBeGreaterThan(0);
   }));
 
-  it('should return create new course', inject([CoursesService], (service: CoursesService) => {
+  it('should return newly created course', inject([CoursesService], (service: CoursesService) => {
+    let existingCoursesNumber = service.listCourses().length;
     let newCourse = {
       id: 0,
       name: 'nameNew',
@@ -28,8 +29,8 @@ describe('CoursesService', () => {
     };
     let savedCourse = service.createCourse(newCourse);
 
-    expect(savedCourse.id).toBe(4);
-    expect(service.listCourses()[3]).toEqual(savedCourse);
+    expect(savedCourse.id).toBe(existingCoursesNumber + 1);
+    expect(service.listCourses()[existingCoursesNumber]).toEqual(savedCourse);
   }));
 
   it('should return existing course by id', inject([CoursesService], (service: CoursesService) => {

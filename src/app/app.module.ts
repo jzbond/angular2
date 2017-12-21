@@ -20,6 +20,7 @@ import {CourseComponent} from './pages/courses/course/course.component';
 import {ToolbarComponent} from './pages/courses/toolbar/toolbar.component';
 import {AboutComponent} from './pages/about/about.component';
 import {UserInfoComponent} from "./pages/common/userinfo/userinfo.component";
+import { HighlightByDateDirective } from './pages/courses/course/highlight-by-date.directive';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import {UserInfoComponent} from "./pages/common/userinfo/userinfo.component";
     AboutComponent,
     UserInfoComponent,
     CoursesConfirmationDialog,
+    HighlightByDateDirective,
   ],
   imports: [
     BrowserModule,

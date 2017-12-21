@@ -2,6 +2,7 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {MatCardModule} from '@angular/material';
 
 import {CourseComponent} from './course.component';
+import {HighlightByDateDirective} from "./highlight-by-date.directive";
 
 describe('CourseComponent', () => {
   let component: CourseComponent;
@@ -9,7 +10,7 @@ describe('CourseComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [CourseComponent],
+      declarations: [CourseComponent, HighlightByDateDirective],
       imports: [MatCardModule],
     })
       .compileComponents();
