@@ -7,3 +7,10 @@ courses-toolbar {
 course-card {
   margin: 1em;
 }
+
+.empty {
+  margin: 20px 0px;
+  text-align: center;
+  background-color: lightgray;
+  border: 1px solid black;
+}
