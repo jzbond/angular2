@@ -19,7 +19,8 @@ export class CourseComponent implements OnInit, OnDestroy, OnChanges, DoCheck, A
     durationInSeconds: 0,
     name: '',
     type: '',
-    date: null
+    date: null,
+    topRated: false,
   };
 
   constructor() {

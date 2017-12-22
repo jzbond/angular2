@@ -25,7 +25,8 @@ describe('CoursesService', () => {
       description: 'descriptionNew',
       type: 'text',
       date: new Date(Date.UTC(2017, 11, 13)),
-      durationInSeconds: 30 * 60
+      durationInSeconds: 30 * 60,
+      topRated: false,
     };
     let savedCourse = service.createCourse(newCourse);
 
@@ -41,6 +42,7 @@ describe('CoursesService', () => {
       type: 'video',
       date: new Date(Date.UTC(2018, 4, 10)),
       durationInSeconds: 1.5 * 60 * 60,
+      topRated: true,
     };
 
     let course = service.getCourse(3);
@@ -56,6 +58,7 @@ describe('CoursesService', () => {
       type: 'video',
       date: new Date(Date.UTC(2018, 5, 15)),
       durationInSeconds: 45 * 60,
+      topRated: false,
     };
 
     let course = service.updateCourse(updatedCourse);
@@ -72,6 +75,7 @@ describe('CoursesService', () => {
       type: 'video',
       date: new Date(Date.UTC(2018, 4, 10)),
       durationInSeconds: 1.5 * 60 * 60,
+      topRated: true,
     };
 
     let course = service.removeCourse(3);
