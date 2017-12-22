@@ -17,6 +17,7 @@ export class CoursesService {
         type: 'video',
         date: new Date(Date.UTC(2018, 0, 11)),
         durationInSeconds: 2.5 * 60 * 60,
+        topRated: false,
       }],
       [2, {
         id: 2,
@@ -25,6 +26,7 @@ export class CoursesService {
         type: 'video',
         date: new Date(Date.UTC(2017, 11, 15)),
         durationInSeconds: 0.75 * 60 * 60,
+        topRated: false,
       }],
       [3, {
         id: 3,
@@ -33,6 +35,7 @@ export class CoursesService {
         type: 'video',
         date: new Date(Date.UTC(2018, 4, 10)),
         durationInSeconds: 1.5 * 60 * 60,
+        topRated: true,
       }],
       [4, {
         id: 4,
@@ -41,6 +44,7 @@ export class CoursesService {
         type: 'video',
         date: new Date(Date.UTC(2017, 2, 8)),
         durationInSeconds: 2.5 * 60 * 60,
+        topRated: false,
       }],
     ]);
   }

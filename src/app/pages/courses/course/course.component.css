@@ -25,3 +25,13 @@ mat-card:after {
   display: table;
   clear: both;
 }
+
+.starred::after {
+  content: "  \2605";
+  color: black;
+  font-weight: bolder;
+}
+
+.top-rated {
+  background-color: lightgrey;
+}
