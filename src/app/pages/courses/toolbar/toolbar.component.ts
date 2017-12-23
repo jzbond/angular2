@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 
 @Component({
   selector: 'courses-toolbar',
@@ -6,17 +6,17 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./toolbar.component.css']
 })
 export class ToolbarComponent implements OnInit {
-  courseParam: string;
+  @Output('find') findCourseEmitter = new EventEmitter();
 
   constructor() {
-    this.courseParam = 'Enter name fragment or date...';
   }
 
   ngOnInit() {
   }
 
-  findCourses() {
-    console.log(`searching for course: ${this.courseParam}`);
+  findCourses(courseParam: string) {
+    this.findCourseEmitter.emit({
+      name: courseParam,
+    });
   }
-
 }

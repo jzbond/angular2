@@ -2,11 +2,11 @@
   <div class="info">
     <mat-card-header>
       <mat-card-title-group>
-        <mat-card-title>{{course.name}}</mat-card-title>
+        <mat-card-title>{{course.name | uppercase}}</mat-card-title>
       </mat-card-title-group>
       <mat-card-title-group>
         <mat-card-subtitle [ngClass]="{'starred': course.topRated}">
-          {{course.durationInSeconds*1000 | date: 'H:mm:ss': 'UTC'}}
+          {{course.durationInSeconds | duration}}
         </mat-card-subtitle>
       </mat-card-title-group>
       <mat-card-title-group>
