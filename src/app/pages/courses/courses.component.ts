@@ -26,7 +26,6 @@ export class CoursesComponent implements OnInit {
   }
 
   deleteCourse($event) {
-
     let dialogRef = this.dialog.open(CoursesConfirmationDialog, {
       data: {name: $event.name},
     });
@@ -39,8 +38,15 @@ export class CoursesComponent implements OnInit {
     });
   }
 
-  private refreshCoursesList() {
-    this.courses = this.coursesService.listCourses();
+  findCourse($event) {
+    this.refreshCoursesList($event.name);
+  }
+
+  private refreshCoursesList(courseName?: string) {
+    const coursesList = this.coursesService.listCourses();
+    this.courses = courseName
+      ? coursesList.filter((course) => course.name.toLowerCase().includes(courseName.toLowerCase()))
+      : coursesList;
   }
 
 }

@@ -1,11 +1,14 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {MatCardModule, MatFormFieldModule, MatInputModule} from "@angular/material";
+import {MatDialogModule} from "@angular/material/dialog";
+import {NoopAnimationsModule} from "@angular/platform-browser/animations";
 
 import {CoursesComponent} from './courses.component';
 import {CourseComponent} from './course/course.component';
 import {ToolbarComponent} from './toolbar/toolbar.component';
-import {MatCardModule} from "@angular/material";
-import {MatDialogModule} from "@angular/material/dialog";
-import {FormsModule} from "@angular/forms";
+import {HighlightByDateDirective} from "./course/highlight-by-date.directive";
+import {DurationPipe} from "./course/duration.pipe";
+import {OrderByCreatedDatePipe} from "./order-by-created-date.pipe";
 
 describe('CoursesComponent', () => {
   let component: CoursesComponent;
@@ -13,8 +16,15 @@ describe('CoursesComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [MatCardModule, MatDialogModule, FormsModule],
-      declarations: [CoursesComponent, CourseComponent, ToolbarComponent]
+      imports: [MatCardModule, MatDialogModule, MatFormFieldModule, MatInputModule, NoopAnimationsModule,],
+      declarations: [
+        CoursesComponent,
+        CourseComponent,
+        ToolbarComponent,
+        HighlightByDateDirective,
+        DurationPipe,
+        OrderByCreatedDatePipe,
+      ]
     })
       .compileComponents();
   }));

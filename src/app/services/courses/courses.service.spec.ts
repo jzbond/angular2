@@ -14,22 +14,24 @@ describe('CoursesService', () => {
   }));
 
   it('should return courses', inject([CoursesService], (service: CoursesService) => {
-    expect(service.listCourses().length).toBe(3);
+    expect(service.listCourses().length).toBeGreaterThan(0);
   }));
 
-  it('should return create new course', inject([CoursesService], (service: CoursesService) => {
+  it('should return newly created course', inject([CoursesService], (service: CoursesService) => {
+    let existingCoursesNumber = service.listCourses().length;
     let newCourse = {
       id: 0,
       name: 'nameNew',
       description: 'descriptionNew',
       type: 'text',
       date: new Date(Date.UTC(2017, 11, 13)),
-      durationInSeconds: 30 * 60
+      durationInSeconds: 30 * 60,
+      topRated: false,
     };
     let savedCourse = service.createCourse(newCourse);
 
-    expect(savedCourse.id).toBe(4);
-    expect(service.listCourses()[3]).toEqual(savedCourse);
+    expect(savedCourse.id).toBe(existingCoursesNumber + 1);
+    expect(service.listCourses()[existingCoursesNumber]).toEqual(savedCourse);
   }));
 
   it('should return existing course by id', inject([CoursesService], (service: CoursesService) => {
@@ -40,6 +42,7 @@ describe('CoursesService', () => {
       type: 'video',
       date: new Date(Date.UTC(2018, 4, 10)),
       durationInSeconds: 1.5 * 60 * 60,
+      topRated: true,
     };
 
     let course = service.getCourse(3);
@@ -55,6 +58,7 @@ describe('CoursesService', () => {
       type: 'video',
       date: new Date(Date.UTC(2018, 5, 15)),
       durationInSeconds: 45 * 60,
+      topRated: false,
     };
 
     let course = service.updateCourse(updatedCourse);
@@ -71,6 +75,7 @@ describe('CoursesService', () => {
       type: 'video',
       date: new Date(Date.UTC(2018, 4, 10)),
       durationInSeconds: 1.5 * 60 * 60,
+      topRated: true,
     };
 
     let course = service.removeCourse(3);

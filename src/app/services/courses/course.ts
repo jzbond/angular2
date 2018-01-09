@@ -5,4 +5,5 @@ export interface Course {
   type: string;
   date: Date;
   durationInSeconds: number;
+  topRated: boolean;
 }
