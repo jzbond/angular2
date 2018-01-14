@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 
 
 @Injectable()
@@ -10,7 +10,7 @@ export class AuthorizationService {
 
   public login(login: string, password: string): void {
     if (login) {
-      localStorage.setItem(AuthorizationService.USER_TOKEN, JSON.stringify({login, password}));
+      localStorage.setItem(AuthorizationService.USER_TOKEN, JSON.stringify({ login, password }));
       console.log(`User ${login} logged in`);
     }
   }

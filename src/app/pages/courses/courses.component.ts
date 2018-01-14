@@ -1,12 +1,12 @@
-import {ChangeDetectionStrategy, Component, Inject, OnInit} from '@angular/core';
-import {CoursesService} from "../../services/courses/courses.service";
-import {Course} from "../../services/courses/course";
-import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
+import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
+import { CoursesService } from '../../services/courses/courses.service';
+import { Course } from '../../services/courses/course';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material';
 
 @Component({
   selector: 'courses',
   templateUrl: './courses.component.html',
-  styleUrls: ['./courses.component.css'],
+  styleUrls: [ './courses.component.css' ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CoursesComponent implements OnInit {
@@ -27,8 +27,8 @@ export class CoursesComponent implements OnInit {
   }
 
   deleteCourse($event) {
-    let dialogRef = this.dialog.open(CoursesConfirmationDialog, {
-      data: {name: $event.name},
+    const dialogRef = this.dialog.open(CoursesConfirmationDialog, {
+      data: { name: $event.name },
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -55,7 +55,7 @@ export class CoursesComponent implements OnInit {
 @Component({
   selector: 'courses-confirmation-dialog',
   templateUrl: 'courses.component.dialog.html',
-  styles: ['button {margin: 5px;}'],
+  styles: [ 'button {margin: 5px;}' ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CoursesConfirmationDialog {

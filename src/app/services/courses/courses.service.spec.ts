@@ -1,25 +1,25 @@
-import {TestBed, inject} from '@angular/core/testing';
+import { inject, TestBed } from '@angular/core/testing';
 
-import {CoursesService} from './courses.service';
+import { CoursesService } from './courses.service';
 
 describe('CoursesService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [CoursesService]
+      providers: [ CoursesService ]
     });
   });
 
-  it('should be created', inject([CoursesService], (service: CoursesService) => {
+  it('should be created', inject([ CoursesService ], (service: CoursesService) => {
     expect(service).toBeTruthy();
   }));
 
-  it('should return courses', inject([CoursesService], (service: CoursesService) => {
+  it('should return courses', inject([ CoursesService ], (service: CoursesService) => {
     expect(service.listCourses().length).toBeGreaterThan(0);
   }));
 
-  it('should return newly created course', inject([CoursesService], (service: CoursesService) => {
-    let existingCoursesNumber = service.listCourses().length;
-    let newCourse = {
+  it('should return newly created course', inject([ CoursesService ], (service: CoursesService) => {
+    const existingCoursesNumber = service.listCourses().length;
+    const newCourse = {
       id: 0,
       name: 'nameNew',
       description: 'descriptionNew',
@@ -28,14 +28,14 @@ describe('CoursesService', () => {
       durationInSeconds: 30 * 60,
       topRated: false,
     };
-    let savedCourse = service.createCourse(newCourse);
+    const savedCourse = service.createCourse(newCourse);
 
     expect(savedCourse.id).toBe(existingCoursesNumber + 1);
-    expect(service.listCourses()[existingCoursesNumber]).toEqual(savedCourse);
+    expect(service.listCourses()[ existingCoursesNumber ]).toEqual(savedCourse);
   }));
 
-  it('should return existing course by id', inject([CoursesService], (service: CoursesService) => {
-    let existingCourse = {
+  it('should return existing course by id', inject([ CoursesService ], (service: CoursesService) => {
+    const existingCourse = {
       id: 3,
       name: 'TypeScript Basics',
       description: 'Introduction to TypeScript',
@@ -45,13 +45,13 @@ describe('CoursesService', () => {
       topRated: true,
     };
 
-    let course = service.getCourse(3);
+    const course = service.getCourse(3);
 
     expect(course).toEqual(existingCourse);
   }));
 
-  it('should return updated course', inject([CoursesService], (service: CoursesService) => {
-    let updatedCourse = {
+  it('should return updated course', inject([ CoursesService ], (service: CoursesService) => {
+    const updatedCourse = {
       id: 3,
       name: 'TypeScript Basics updated',
       description: 'Introduction to TypeScript updated',
@@ -61,14 +61,14 @@ describe('CoursesService', () => {
       topRated: false,
     };
 
-    let course = service.updateCourse(updatedCourse);
+    const course = service.updateCourse(updatedCourse);
 
     expect(service.getCourse(updatedCourse.id)).toEqual(updatedCourse);
     expect(service.getCourse(updatedCourse.id)).toEqual(course);
   }));
 
-  it('should return deleted course', inject([CoursesService], (service: CoursesService) => {
-    let deletedCourse = {
+  it('should return deleted course', inject([ CoursesService ], (service: CoursesService) => {
+    const deletedCourse = {
       id: 3,
       name: 'TypeScript Basics',
       description: 'Introduction to TypeScript',
@@ -78,7 +78,7 @@ describe('CoursesService', () => {
       topRated: true,
     };
 
-    let course = service.removeCourse(3);
+    const course = service.removeCourse(3);
 
     expect(course).toEqual(deletedCourse);
     expect(service.getCourse(3)).not.toBeDefined();

@@ -1,9 +1,9 @@
-import {OrderByCreatedDatePipe} from './order-by-created-date.pipe';
-import {Course} from "../../services/courses/course";
+import { OrderByCreatedDatePipe } from './order-by-created-date.pipe';
+import { Course } from '../../services/courses/course';
 
 describe('OrderByCreatedDatePipe', () => {
   it('should order array by created dates', () => {
-    let courses: Course[] = [
+    const courses: Course[] = [
       {
         id: 4,
         name: 'name 4',
@@ -38,7 +38,7 @@ describe('OrderByCreatedDatePipe', () => {
         topRated: false,
       },
     ];
-    let sortedCourses: Course[] = [
+    const sortedCourses: Course[] = [
       {
         id: 1,
         name: 'name 1',

@@ -1,6 +1,6 @@
-import {Directive, ElementRef, Input, OnInit} from '@angular/core';
+import { Directive, ElementRef, Input, OnInit } from '@angular/core';
 import * as moment from 'moment';
-import {Moment} from "moment";
+import { Moment } from 'moment';
 
 
 /**
@@ -20,7 +20,7 @@ export class HighlightByDateDirective implements OnInit {
   }
 
   ngOnInit(): void {
-    let courseDate: Moment = moment(this.courseCreatedDate);
+    const courseDate: Moment = moment(this.courseCreatedDate);
     if (courseDate.isAfter(this.currentDate)) {
       this.courseCard.nativeElement.style.border = '1px solid blue';
     } else if (courseDate.isSameOrAfter(this.currentDate.subtract(14, 'days'))) {

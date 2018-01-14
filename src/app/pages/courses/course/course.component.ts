@@ -1,17 +1,29 @@
 import {
-  Component, OnInit, OnChanges, OnDestroy, DoCheck, Input, EventEmitter, Output,
-  SimpleChanges, AfterViewChecked, AfterViewInit, AfterContentInit, AfterContentChecked, ChangeDetectionStrategy,
+  AfterContentChecked,
+  AfterContentInit,
+  AfterViewChecked,
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  DoCheck,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Output,
+  SimpleChanges
 } from '@angular/core';
-import {Course} from "../../../services/courses/course";
+import { Course } from '../../../services/courses/course';
 
 @Component({
   selector: 'course-card',
   templateUrl: './course.component.html',
-  styleUrls: ['./course.component.css'],
+  styleUrls: [ './course.component.css' ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CourseComponent implements OnInit, OnDestroy, OnChanges, DoCheck, AfterViewChecked, AfterViewInit, AfterContentInit, AfterContentChecked {
-  private nextId: number = 0;
+  private nextId = 0;
 
   @Output('delete') deleteCourseEmitter = new EventEmitter();
   @Input('course') course: Course;
@@ -59,7 +71,6 @@ export class CourseComponent implements OnInit, OnDestroy, OnChanges, DoCheck, A
   }
 
   private logIt(msg: string) {
-    // TODO inject logger service
     console.log(`Course ${this.course.id}: #${this.nextId++} ${msg}`);
   }
 }

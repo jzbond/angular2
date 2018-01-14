@@ -1,9 +1,9 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output} from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'courses-toolbar',
   templateUrl: './toolbar.component.html',
-  styleUrls: ['./toolbar.component.css'],
+  styleUrls: [ './toolbar.component.css' ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ToolbarComponent implements OnInit {

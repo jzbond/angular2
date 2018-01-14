@@ -1,7 +1,7 @@
-import {HighlightByDateDirective} from './highlight-by-date.directive';
-import {Component, DebugElement, ElementRef} from "@angular/core";
-import {ComponentFixture, TestBed} from "@angular/core/testing";
-import {By} from "@angular/platform-browser";
+import { HighlightByDateDirective } from './highlight-by-date.directive';
+import { Component, DebugElement, ElementRef } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 
 describe('HighlightByDateDirective', () => {
 
@@ -19,8 +19,8 @@ describe('HighlightByDateDirective', () => {
       jasmine.clock().install();
       jasmine.clock().mockDate(new Date(2017, 7, 15, 12, 0));
 
-      let fixture: ComponentFixture<TestComponent> = TestBed.configureTestingModule({
-        declarations: [HighlightByDateDirective, TestComponent]
+      const fixture: ComponentFixture<TestComponent> = TestBed.configureTestingModule({
+        declarations: [ HighlightByDateDirective, TestComponent ]
       }).createComponent(TestComponent);
 
       fixture.detectChanges(); // initial binding
@@ -33,19 +33,19 @@ describe('HighlightByDateDirective', () => {
     });
 
     it('should set "blue" border color for 1st upcoming date (> curDate) element', () => {
-      expect(divs[0].nativeElement.style.border).toBe('1px solid blue');
+      expect(divs[ 0 ].nativeElement.style.border).toBe('1px solid blue');
     });
 
     it('should set "green" border color for 2nd fresh date (>= curDate - 14d) element', () => {
-      expect(divs[1].nativeElement.style.border).toBe('1px solid green');
+      expect(divs[ 1 ].nativeElement.style.border).toBe('1px solid green');
     });
 
     it('should not set border color for 3rd old date (< curDate - 14d) element', () => {
-      expect(divs[2].nativeElement.style.border).toBe('');
+      expect(divs[ 2 ].nativeElement.style.border).toBe('');
     });
 
     it('should not set border color for element without directive', () => {
-      expect(divs[3].nativeElement.style.border).toBe('');
+      expect(divs[ 3 ].nativeElement.style.border).toBe('');
     });
   });
 });
