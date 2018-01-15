@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatFormFieldModule, MatInputModule } from '@angular/material';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { AngularMaterialsModule } from '../../../angular-materials.module';
 
 import { ToolbarComponent } from './toolbar.component';
 
@@ -11,7 +11,7 @@ describe('ToolbarComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
         declarations: [ ToolbarComponent ],
-        imports: [ MatFormFieldModule, MatInputModule, NoopAnimationsModule, ],
+        imports: [ AngularMaterialsModule, NoopAnimationsModule, ],
       })
       .compileComponents();
   }));

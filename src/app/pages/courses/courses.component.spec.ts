@@ -1,7 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatCardModule, MatFormFieldModule, MatInputModule } from '@angular/material';
-import { MatDialogModule } from '@angular/material/dialog';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { AngularMaterialsModule } from '../../angular-materials.module';
 
 import { CoursesComponent } from './courses.component';
 import { CourseComponent } from './course/course.component';
@@ -16,7 +15,7 @@ describe('CoursesComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-        imports: [ MatCardModule, MatDialogModule, MatFormFieldModule, MatInputModule, NoopAnimationsModule, ],
+        imports: [ AngularMaterialsModule, NoopAnimationsModule, ],
         declarations: [
           CoursesComponent,
           CourseComponent,

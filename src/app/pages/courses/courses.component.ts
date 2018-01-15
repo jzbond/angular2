@@ -1,10 +1,11 @@
-import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { CoursesService } from '../../services/courses/courses.service';
 import { Course } from '../../services/courses/course';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog } from '@angular/material';
+import { CoursesConfirmationDialogComponent } from './courses-confirmation-dialog.component';
 
 @Component({
-  selector: 'courses',
+  selector: 'courses-list',
   templateUrl: './courses.component.html',
   styleUrls: [ './courses.component.css' ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -27,7 +28,7 @@ export class CoursesComponent implements OnInit {
   }
 
   deleteCourse($event) {
-    const dialogRef = this.dialog.open(CoursesConfirmationDialog, {
+    const dialogRef = this.dialog.open(CoursesConfirmationDialogComponent, {
       data: { name: $event.name },
     });
 
@@ -50,21 +51,4 @@ export class CoursesComponent implements OnInit {
       : coursesList;
   }
 
-}
-
-@Component({
-  selector: 'courses-confirmation-dialog',
-  templateUrl: 'courses.component.dialog.html',
-  styles: [ 'button {margin: 5px;}' ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-})
-export class CoursesConfirmationDialog {
-
-  constructor(public dialogRef: MatDialogRef<CoursesConfirmationDialog>,
-              @Inject(MAT_DIALOG_DATA) public data: any) {
-  }
-
-  onNoClick(): void {
-    this.dialogRef.close();
-  }
 }

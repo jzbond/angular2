@@ -7,7 +7,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output } from
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ToolbarComponent implements OnInit {
-  @Output('find') findCourseEmitter = new EventEmitter();
+  @Output() find = new EventEmitter();
 
   constructor() {
   }
@@ -16,7 +16,7 @@ export class ToolbarComponent implements OnInit {
   }
 
   findCourses(courseParam: string) {
-    this.findCourseEmitter.emit({
+    this.find.emit({
       name: courseParam,
     });
   }

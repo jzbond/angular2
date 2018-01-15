@@ -9,11 +9,11 @@ import { Moment } from 'moment';
  * Otherwise - no changes are made.
  */
 @Directive({
-  selector: '[highlight-by-date]'
+  selector: '[highlightByDate]'
 })
 export class HighlightByDateDirective implements OnInit {
   private currentDate: Moment;
-  @Input('highlight-by-date') courseCreatedDate: Date;
+  @Input('highlightByDate') courseCreatedDate: Date;
 
   constructor(private courseCard: ElementRef) {
     this.currentDate = moment();

@@ -22,17 +22,18 @@ import { Course } from '../../../services/courses/course';
   styleUrls: [ './course.component.css' ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CourseComponent implements OnInit, OnDestroy, OnChanges, DoCheck, AfterViewChecked, AfterViewInit, AfterContentInit, AfterContentChecked {
+export class CourseComponent implements OnInit, OnDestroy, OnChanges, DoCheck, AfterViewChecked, AfterViewInit, AfterContentInit,
+  AfterContentChecked {
   private nextId = 0;
 
-  @Output('delete') deleteCourseEmitter = new EventEmitter();
-  @Input('course') course: Course;
+  @Output() delete = new EventEmitter();
+  @Input() course: Course;
 
   constructor() {
   }
 
   deleteCourse() {
-    this.deleteCourseEmitter.emit({
+    this.delete.emit({
       id: this.course.id,
       name: this.course.name
     });
