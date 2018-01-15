@@ -2,9 +2,9 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { Course } from '../../services/courses/course';
 
 @Pipe({
-  name: 'orderByCreatedDate'
+  name: 'orderByDate'
 })
-export class OrderByCreatedDatePipe implements PipeTransform {
+export class OrderByDatePipe implements PipeTransform {
 
   transform(courses: Course[]) {
     return courses.sort((c1: Course, c2: Course) => {

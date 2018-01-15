@@ -7,7 +7,7 @@ import { CourseComponent } from './course/course.component';
 import { ToolbarComponent } from './toolbar/toolbar.component';
 import { HighlightByDateDirective } from './course/highlight-by-date.directive';
 import { DurationPipe } from './course/duration.pipe';
-import { OrderByCreatedDatePipe } from './order-by-created-date.pipe';
+import { OrderByDatePipe } from './order-by-date.pipe';
 
 describe('CoursesComponent', () => {
   let component: CoursesComponent;
@@ -22,7 +22,7 @@ describe('CoursesComponent', () => {
           ToolbarComponent,
           HighlightByDateDirective,
           DurationPipe,
-          OrderByCreatedDatePipe,
+          OrderByDatePipe,
         ]
       })
       .compileComponents();
