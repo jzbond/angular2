@@ -8,17 +8,15 @@ import { AuthorizationService } from '../../services/auth/authorization.service'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent implements OnInit {
-  private authService: AuthorizationService;
 
-  constructor() {
-    this.authService = new AuthorizationService();
+  constructor(private authService: AuthorizationService) {
   }
 
   ngOnInit() {
   }
 
   loginUser(userLogin: string, userPassword: string): void {
-    this.authService.login(userLogin, userPassword);
+    this.authService.login(userLogin, userPassword).subscribe();
   }
 
 }

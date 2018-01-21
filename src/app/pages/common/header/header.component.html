@@ -1,5 +1,5 @@
 <mat-toolbar>
   <app-logo></app-logo>
   <div class="filler"></div>
-  <user-info></user-info>
+  <user-info [login]="login | async" (logoff)="logout($event.login)"></user-info>
 </mat-toolbar>

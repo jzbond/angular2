@@ -20,25 +20,27 @@ describe('AuthorizationService', () => {
   it('should authenticate user on login', inject([ AuthorizationService ], (service: AuthorizationService) => {
     expect(service.isAuthenticated()).toBe(false);
 
-    service.login('some_login', 'secret');
-
-    expect(service.isAuthenticated()).toBe(true);
+    service.login('some_login', 'secret').subscribe(
+      () => expect(service.isAuthenticated()).toBe(true)
+    );
   }));
 
   it('should not authenticate user on logout', inject([ AuthorizationService ], (service: AuthorizationService) => {
-    service.login('some_login', 'secret');
-    expect(service.isAuthenticated()).toBe(true);
+    service.login('some_login', 'secret').subscribe(
+      () => expect(service.isAuthenticated()).toBe(true)
+    );
 
-    service.logout();
-
-    expect(service.isAuthenticated()).toBe(false);
+    service.logout().subscribe(
+      () => expect(service.isAuthenticated()).toBe(false)
+    );
   }));
 
   it('should return login for authenticated user', inject([ AuthorizationService ], (service: AuthorizationService) => {
     expect(service.getUserInfo()).toBeNull();
 
-    service.login('some_login', 'secret');
+    service.login('some_login', 'secret').subscribe(
+      () => expect(service.getUserInfo()).toBe('some_login')
+    );
 
-    expect(service.getUserInfo()).toBe('some_login');
   }));
 });

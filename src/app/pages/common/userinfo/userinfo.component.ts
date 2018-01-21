@@ -1,5 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { AuthorizationService } from '../../../services/auth/authorization.service';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'user-info',
@@ -7,26 +6,17 @@ import { AuthorizationService } from '../../../services/auth/authorization.servi
   styleUrls: [ './userinfo.component.css' ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class UserInfoComponent implements OnInit {
+export class UserInfoComponent {
 
-  private authService: AuthorizationService;
+  @Output() logoff = new EventEmitter();
+  @Input() login: string;
 
   constructor() {
-    this.authService = new AuthorizationService();
-  }
-
-  ngOnInit() {
-  }
-
-  isAuthorized(): boolean {
-    return this.authService.isAuthenticated();
-  }
-
-  getAuthUser(): string {
-    return this.authService.getUserInfo();
   }
 
   logout(): void {
-    this.authService.logout();
+    this.logoff.emit({
+      login: this.login
+    });
   }
 }
