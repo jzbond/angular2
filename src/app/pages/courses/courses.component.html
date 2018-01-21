@@ -1,4 +1,6 @@
-<courses-toolbar (find)="findCourse($event);"></courses-toolbar>
-<course-card *ngFor="let aCourse of courses | orderByDate; trackBy: trackById" [course]="aCourse"
-             (delete)="deleteCourse($event);"></course-card>
-<div class="empty" *ngIf="courses.length < 1">No course available. Feel free to add the course.</div>
+<courses-toolbar (find)="findCourses($event.name);"></courses-toolbar>
+<div *ngIf="courses | async; let courses">
+  <course-card *ngFor="let course of courses | orderByDate; trackBy: trackById;" [course]="course"
+               (delete)="deleteCourse($event);"></course-card>
+  <div class="empty" *ngIf="courses.length === 0">No course available. Feel free to add the course.</div>
+</div>

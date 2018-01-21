@@ -9,6 +9,7 @@ import { CoursesConfirmationDialogComponent } from './courses-confirmation-dialo
 import { HighlightByDateDirective } from './course/highlight-by-date.directive';
 import { DurationPipe } from './course/duration.pipe';
 import { OrderByDatePipe } from './order-by-date.pipe';
+import { CoursesService } from '../../services/courses/courses.service';
 
 
 @NgModule({
@@ -27,6 +28,9 @@ import { OrderByDatePipe } from './order-by-date.pipe';
   ],
   entryComponents: [
     CoursesConfirmationDialogComponent,
+  ],
+  providers: [
+    CoursesService,
   ],
   exports: [
     CoursesComponent,

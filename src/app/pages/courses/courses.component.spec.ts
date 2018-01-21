@@ -8,6 +8,7 @@ import { ToolbarComponent } from './toolbar/toolbar.component';
 import { HighlightByDateDirective } from './course/highlight-by-date.directive';
 import { DurationPipe } from './course/duration.pipe';
 import { OrderByDatePipe } from './order-by-date.pipe';
+import { CoursesService } from '../../services/courses/courses.service';
 
 describe('CoursesComponent', () => {
   let component: CoursesComponent;
@@ -23,7 +24,10 @@ describe('CoursesComponent', () => {
           HighlightByDateDirective,
           DurationPipe,
           OrderByDatePipe,
-        ]
+        ],
+      providers: [
+        CoursesService,
+      ]
       })
       .compileComponents();
   }));
