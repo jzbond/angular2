@@ -1,3 +1,11 @@
+mat-card {
+  display: flex;
+}
+
+.course-info {
+  flex: 1 1 auto;
+}
+
 mat-card-title-group {
   flex: 1 1 auto;
 }
@@ -6,24 +14,16 @@ mat-card-title {
   font-weight: bold;
 }
 
+mat-card-subtitle {
+  width: 90px;
+  text-align: center;
+}
+
 mat-card-actions {
-  display: inline;
-}
-
-.info {
-  float: left;
-  width: 80%;
-}
-
-.action {
-  float: right;
-  width: 5em;
-}
-
-mat-card:after {
-  content: "";
-  display: table;
-  clear: both;
+  display: flex;
+  flex-flow: column;
+  width: 110px;
+  padding: 0;
 }
 
 .starred::after {

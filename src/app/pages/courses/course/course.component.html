@@ -1,5 +1,5 @@
 <mat-card [highlightByDate]="course.date" [ngClass]="{'top-rated': course.topRated}">
-  <div class="info">
+  <div class="course-info">
     <mat-card-header>
       <mat-card-title-group>
         <mat-card-title>{{ course.name | uppercase }}</mat-card-title>
@@ -17,10 +17,8 @@
       <div>{{ course.description }}</div>
     </mat-card-content>
   </div>
-  <div class="action">
-    <mat-card-actions>
-      <button mat-button>Edit course</button>
-      <button mat-button (click)="deleteCourse();">Delete</button>
-    </mat-card-actions>
-  </div>
+  <mat-card-actions>
+    <button mat-button>Edit course</button>
+    <button mat-button (click)="deleteCourse()">Delete</button>
+  </mat-card-actions>
 </mat-card>
