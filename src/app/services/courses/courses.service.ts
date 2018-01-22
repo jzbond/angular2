@@ -9,6 +9,7 @@ import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class CoursesService {
+  static readonly COURSE_TOKEN = 'courseId';
 
   private coursesMap: Map<number, Course>;
   private coursesSubject = new Rx.BehaviorSubject<Array<Course>>([]);
@@ -115,10 +116,30 @@ export class CoursesService {
       .toArray()
       .do(courses => this.coursesSubject.next(courses))
     ;
-    if(subscribe) {
+    if (subscribe) {
       observable.subscribe();
       return Observable.empty();
     }
     return observable;
+  }
+
+  requestNewCourseData(id?: number): Observable<number> {
+    return Observable.of(id)
+      .do(() => localStorage.setItem(CoursesService.COURSE_TOKEN, JSON.stringify({ id })))
+      ;
+  }
+
+  cancelNewCourseData(): Observable<boolean> {
+    return Observable.of(true)
+      .do(() => localStorage.removeItem(CoursesService.COURSE_TOKEN))
+      ;
+  }
+
+  getCourseTokenValue(): number {
+    return JSON.parse(localStorage.getItem(CoursesService.COURSE_TOKEN)).id;
+  }
+
+  hasCourseToken(): boolean {
+    return localStorage.getItem(CoursesService.COURSE_TOKEN) != null;
   }
 }

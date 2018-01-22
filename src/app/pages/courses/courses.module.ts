@@ -10,6 +10,7 @@ import { HighlightByDateDirective } from './course/highlight-by-date.directive';
 import { DurationPipe } from './course/duration.pipe';
 import { OrderByDatePipe } from './order-by-date.pipe';
 import { CoursesService } from '../../services/courses/courses.service';
+import { EditComponent } from './edit/edit.component';
 
 
 @NgModule({
@@ -25,6 +26,7 @@ import { CoursesService } from '../../services/courses/courses.service';
     HighlightByDateDirective,
     DurationPipe,
     OrderByDatePipe,
+    EditComponent,
   ],
   entryComponents: [
     CoursesConfirmationDialogComponent,

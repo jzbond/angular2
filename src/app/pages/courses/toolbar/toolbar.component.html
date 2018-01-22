@@ -3,6 +3,5 @@
     <input matInput placeholder="Enter name fragment or date..." #courseParam>
   </mat-form-field>
   <button mat-button (click)="findCourses(courseParam.value)">Find</button>
-
-  <button mat-button>Add Course</button>
+  <button mat-button (click)="addCourse()">Add Course</button>
 </div>

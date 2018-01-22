@@ -27,11 +27,15 @@ export class CoursesComponent implements OnInit {
     this.findCourses();
   }
 
+  hasEditRequest(): boolean {
+    return this.coursesService.hasCourseToken();
+  }
+
   trackById(index: number, course: Course): number {
     return course.id;
   }
 
-  deleteCourse($event) {
+  deleteCourse($event): void {
     const dialogRef = this.dialog.open(CoursesConfirmationDialogComponent, {
       data: { name: $event.name },
     });
@@ -43,8 +47,23 @@ export class CoursesComponent implements OnInit {
     });
   }
 
-  findCourses(courseName?: string) {
+  findCourses(courseName?: string): void {
     this.coursesService.filterCourses(courseName, this.outdatedTime).subscribe();
   }
 
+  editCourse(id?: number): void {
+    this.coursesService.requestNewCourseData(id).subscribe();
+  }
+
+  getEditCourse(): Observable<Course> {
+    return this.coursesService.getCourse(this.coursesService.getCourseTokenValue());
+  }
+
+  saveCourse(course: Course): void {
+    this.coursesService.cancelNewCourseData().subscribe();
+  }
+
+  cancelEdit(): void {
+    this.coursesService.cancelNewCourseData().subscribe();
+  }
 }
