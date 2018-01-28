@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { User } from '../../../services/auth/user';
 
 @Component({
   selector: 'user-info',
@@ -8,7 +9,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output
 })
 export class UserInfoComponent {
 
-  @Output() logoff = new EventEmitter();
+  @Output() logoff = new EventEmitter<User>();
   @Input() login: string;
 
   constructor() {
