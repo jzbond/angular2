@@ -1,11 +1,12 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { CoursesService } from '../../services/courses/courses.service';
 import { Course } from '../../services/courses/course';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatSnackBar } from '@angular/material';
 import { CoursesConfirmationDialogComponent } from './courses-confirmation-dialog.component';
 import { Observable } from 'rxjs/Observable';
 import * as moment from 'moment';
 import { Moment } from 'moment';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
   selector: 'courses-list',
@@ -13,57 +14,66 @@ import { Moment } from 'moment';
   styleUrls: [ './courses.component.css' ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CoursesComponent implements OnInit {
+export class CoursesComponent implements OnInit, OnDestroy {
 
   private outdatedTime: Moment;
-  courses: Observable<Array<Course>>;
+  private deletedCourseSubscription: Subscription;
+  private savedCourseSubscription: Subscription;
+  courses: Observable<Course[]>;
+  selectedCourse: Observable<Course | null>;
 
-  constructor(public dialog: MatDialog, private coursesService: CoursesService) {
+  constructor(public dialog: MatDialog, public snackBar: MatSnackBar, private coursesService: CoursesService) {
     this.outdatedTime = moment().subtract(14, 'd');
-    this.courses = coursesService.courses;
+    this.courses = coursesService.coursesList;
+  }
+
+  private showNotification(message: string) {
+    this.snackBar.open(message, '', {
+      duration: 1000,
+    });
   }
 
   ngOnInit() {
-    this.findCourses();
+    this.coursesService.initCourses(this.outdatedTime);
+    this.deletedCourseSubscription = this.coursesService.deletedCourse.subscribe(name => this.showNotification(`Deleted ${name} course`));
+    this.savedCourseSubscription = this.coursesService.savedCourse.subscribe(name => this.showNotification(`Saved ${name} course`));
+    this.selectedCourse = this.coursesService.selectedCourse;
   }
 
-  hasEditRequest(): boolean {
-    return this.coursesService.hasCourseToken();
+  ngOnDestroy() {
+    this.deletedCourseSubscription.unsubscribe();
+    this.savedCourseSubscription.unsubscribe();
   }
 
   trackById(index: number, course: Course): number {
     return course.id;
   }
 
-  deleteCourse($event): void {
+  deleteCourse($event: { id: number, name: string }): void {
     const dialogRef = this.dialog.open(CoursesConfirmationDialogComponent, {
       data: { name: $event.name },
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.coursesService.removeCourse($event.id).subscribe();
+        this.coursesService.removeCourse($event.id);
       }
     });
   }
 
   findCourses(courseName?: string): void {
-    this.coursesService.filterCourses(courseName, this.outdatedTime).subscribe();
+    this.coursesService.filterCourses(courseName);
   }
 
-  editCourse(id?: number): void {
-    this.coursesService.requestNewCourseData(id).subscribe();
-  }
-
-  getEditCourse(): Observable<Course> {
-    return this.coursesService.getCourse(this.coursesService.getCourseTokenValue());
+  selectCourse(id?: number): void {
+    this.coursesService.selectCourse(id);
   }
 
   saveCourse(course: Course): void {
-    this.coursesService.cancelNewCourseData().subscribe();
+    this.coursesService.saveCourse(course);
   }
 
   cancelEdit(): void {
-    this.coursesService.cancelNewCourseData().subscribe();
+    this.coursesService.cancel();
   }
 }

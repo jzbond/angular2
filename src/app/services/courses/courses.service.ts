@@ -1,145 +1,167 @@
 import { Injectable } from '@angular/core';
 import { Course } from './course';
 import * as _ from 'lodash';
-import * as Rx from 'rxjs/Rx';
 import * as moment from 'moment';
 import { Moment } from 'moment';
 import { Observable } from 'rxjs/Observable';
+import { delay, map, share, tap } from 'rxjs/operators';
+import { ReplaySubject } from 'rxjs/ReplaySubject';
+import { Subject } from 'rxjs/Subject';
+import 'rxjs/add/observable/timer';
 
 
 @Injectable()
 export class CoursesService {
-  static readonly COURSE_TOKEN = 'courseId';
 
   private coursesMap: Map<number, Course>;
-  private coursesSubject = new Rx.BehaviorSubject<Array<Course>>([]);
   private courseName: string;
   private outdatedTime: Moment;
 
-  courses: Observable<Array<Course>> = this.coursesSubject.asObservable();
+  private filterSubject = new ReplaySubject<string>();
+  private selectedCourseSubject = new ReplaySubject<number | null>(0);
+  private deletedCourseSubject = new Subject<number>();
+  private savedCourseSubject = new Subject<Course>();
+
+  public readonly coursesList: Observable<Course[]> = this.filterSubject.asObservable()
+    .pipe(
+      tap(filter => this.courseName = filter),
+      map(filter => Array.from(this.coursesMap.values())
+        .filter((course) => !this.courseName || course.name.toLowerCase().includes(this.courseName))
+        .filter((course) => !this.outdatedTime || moment(course.date).isSameOrAfter(this.outdatedTime))
+      ),
+    );
+
+  public readonly selectedCourse: Observable<Course | null> = this.selectedCourseSubject.asObservable()
+    .pipe(
+      map((id) => {
+        if (id) {
+          return this.coursesMap.get(id) || {
+              id: -1,
+              name: '',
+              description: '',
+              type: '',
+              date: moment(0).toDate(),
+              durationInSeconds: 0,
+              topRated: false,
+            };
+        }
+        return null;
+      }),
+    );
+
+  public readonly savedCourse: Observable<string> = this.savedCourseSubject.asObservable()
+    .pipe(
+      map((course) => {
+        if (course.id > 0) {
+          const savedCourse = _.cloneDeep(course);
+          savedCourse.id = this.coursesMap.size + 1;
+          return savedCourse;
+        }
+        return course;
+      }),
+      delay(500),// emulate initial http request
+      map(savedCourse => {
+        this.coursesMap.set(savedCourse.id, savedCourse);
+        return savedCourse.name;
+      }),
+      tap(() => this.selectedCourseSubject.next(null)),
+      tap(() => this.filterSubject.next(this.courseName)),
+      share(),
+    );
+
+  public readonly deletedCourse: Observable<string> = this.deletedCourseSubject.asObservable()
+    .pipe(
+      delay(500),// emulate initial http request
+      map(id => {
+        const course = this.coursesMap.get(id);
+        this.coursesMap.delete(id);
+        return course ? course.name : '';
+      }),
+      tap(() => this.filterSubject.next(this.courseName)),
+      share(),
+    );
 
   constructor() {
-    this.coursesMap = new Map([
-      [ 1, {
-        id: 1,
-        name: 'Angular 2 Basics',
-        description: 'Introduction to Angular 2',
-        type: 'video',
-        date: new Date(Date.UTC(2018, 0, 11)),
-        durationInSeconds: 2.5 * 60 * 60,
-        topRated: false,
-      } ],
-      [ 2, {
-        id: 2,
-        name: 'Angular Materials Basics',
-        description: 'Introduction to Angular Materials',
-        type: 'video',
-        date: new Date(Date.UTC(2017, 11, 15)),
-        durationInSeconds: 0.75 * 60 * 60,
-        topRated: false,
-      } ],
-      [ 3, {
-        id: 3,
-        name: 'TypeScript Basics',
-        description: 'Introduction to TypeScript',
-        type: 'video',
-        date: new Date(Date.UTC(2018, 4, 10)),
-        durationInSeconds: 1.5 * 60 * 60,
-        topRated: true,
-      } ],
-      [ 4, {
-        id: 4,
-        name: 'JavaScript Basics',
-        description: 'Introduction to JavaScript',
-        type: 'video',
-        date: new Date(Date.UTC(2017, 2, 8)),
-        durationInSeconds: 2.5 * 60 * 60,
-        topRated: false,
-      } ],
-    ]);
-    Observable.timer(2000).do(() => this.setVisibleCourses()).subscribe();
+    this.coursesMap = new Map();
+    this.courseName = '';
   }
 
-  public filterCourses(courseName?: string, outdatedTime?: Moment): Observable<Course[]> {
-    this.courseName = courseName;
-    this.outdatedTime = outdatedTime;
-    return this.setVisibleCourses(false);
+  public initCourses(outdatedTime?: Moment): void {
+    this.filterSubject.next('');
+    this.outdatedTime = outdatedTime || moment(0);
+    // emulate initial http request
+    Observable.timer(2000).pipe(
+      tap(() => {
+        const currentDate: Moment = moment().utc().startOf('day');
+        [
+          {
+            id: 1,
+            name: 'Angular 2 Basics',
+            description: 'Introduction to Angular 2',
+            type: 'video',
+            date: currentDate.clone().subtract(1, 'd').toDate(),
+            durationInSeconds: 2.5 * 60 * 60,
+            topRated: true,
+          }, {
+          id: 2,
+          name: 'Angular Materials Basics',
+          description: 'Introduction to Angular Materials',
+          type: 'video',
+          date: currentDate.clone().add(2, 'M').toDate(),
+          durationInSeconds: 0.75 * 60 * 60,
+          topRated: false,
+        }, {
+          id: 3,
+          name: 'TypeScript Basics',
+          description: 'Introduction to TypeScript',
+          type: 'video',
+          date: currentDate.clone().subtract(14, 'd').toDate(),
+          durationInSeconds: 1.5 * 60 * 60,
+          topRated: true,
+        }, {
+          id: 4,
+          name: 'JavaScript Basics',
+          description: 'Introduction to JavaScript',
+          type: 'video',
+          date: currentDate.clone().subtract(15, 'd').toDate(),
+          durationInSeconds: 2.5 * 60 * 60,
+          topRated: false,
+        } ]
+          .map(course => {
+            return {
+              id: course.id,
+              name: course.name,
+              description: course.description,
+              type: course.type,
+              date: course.date,
+              durationInSeconds: course.durationInSeconds,
+              topRated: course.topRated,
+            };
+          })
+          .map(course => this.coursesMap.set(course.id, course));
+
+      }),
+      tap(() => this.filterSubject.next('')),
+    ).subscribe();
   }
 
-  public getCourse(id: number): Observable<Course> {
-    return Observable.of(this.coursesMap.get(id))
-      .delay(500)
-      ;
+  public filterCourses(courseName?: string): void {
+    this.filterSubject.next(courseName ? courseName.toLowerCase() : '');
   }
 
-  public createCourse(course: Course): Observable<Course> {
-    const savedCourse = _.cloneDeep(course);
-    savedCourse.id = this.coursesMap.size + 1;
-    return Observable.of(savedCourse)
-      .delay(500)
-      .do((savedCourse) => this.coursesMap.set(savedCourse.id, savedCourse))
-      .do(() => this.setVisibleCourses())
-      ;
+  public selectCourse(id?: number): void {
+    this.selectedCourseSubject.next(id || -1);
   }
 
-  public updateCourse(course: Course): Observable<Course> {
-    return Observable.of(course)
-      .delay(500)
-      .do((updatedCourse) => this.coursesMap.set(updatedCourse.id, updatedCourse))
-      .do(() => this.setVisibleCourses())
-      ;
+  public saveCourse(course: Course): void {
+    this.savedCourseSubject.next(course);
   }
 
-  public removeCourse(id: number): Observable<Course> {
-    return Observable.of(this.coursesMap.get(id))
-      .delay(500)
-      .do(() => this.coursesMap.delete(id))
-      .do(() => this.setVisibleCourses())
-      ;
+  public removeCourse(id: number): void {
+    this.deletedCourseSubject.next(id);
   }
 
-  private setVisibleCourses(subscribe: boolean = true): Observable<Course[]> {
-    const observable = Observable.from(Array.from(this.coursesMap.values()))
-      .filter((course) => !this.courseName || course.name.toLowerCase().includes(this.courseName.toLowerCase()))
-      .filter((course) => !this.outdatedTime || moment(course.date).isSameOrAfter(this.outdatedTime))
-      .map((course: Course) => {
-        return {
-          id: course.id,
-          name: course.name,
-          description: course.description,
-          type: course.type,
-          date: course.date,
-          durationInSeconds: course.durationInSeconds,
-          topRated: course.topRated,
-        };
-      })
-      .toArray()
-      .do(courses => this.coursesSubject.next(courses))
-    ;
-    if (subscribe) {
-      observable.subscribe();
-      return Observable.empty();
-    }
-    return observable;
-  }
-
-  requestNewCourseData(id?: number): Observable<number> {
-    return Observable.of(id)
-      .do(() => localStorage.setItem(CoursesService.COURSE_TOKEN, JSON.stringify({ id })))
-      ;
-  }
-
-  cancelNewCourseData(): Observable<boolean> {
-    return Observable.of(true)
-      .do(() => localStorage.removeItem(CoursesService.COURSE_TOKEN))
-      ;
-  }
-
-  getCourseTokenValue(): number {
-    return JSON.parse(localStorage.getItem(CoursesService.COURSE_TOKEN)).id;
-  }
-
-  hasCourseToken(): boolean {
-    return localStorage.getItem(CoursesService.COURSE_TOKEN) != null;
+  public cancel(): void {
+    this.selectedCourseSubject.next(null);
   }
 }

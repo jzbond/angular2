@@ -10,7 +10,7 @@ import { Course } from '../../../services/courses/course';
 export class EditComponent implements OnInit {
 
   @Output() cancel = new EventEmitter();
-  @Output() save = new EventEmitter();
+  @Output() save = new EventEmitter<Course>();
   @Input() course: Course;
 
   constructor() {
@@ -20,10 +20,7 @@ export class EditComponent implements OnInit {
   }
 
   saveCourse() {
-    this.save.emit({
-      id: null,
-      description: null,
-    });
+    this.save.emit(this.course);
   }
 
   discard() {

@@ -25,7 +25,7 @@ describe('CourseComponent', () => {
       name: '',
       description: '',
       type: '',
-      date: null,
+      date: new Date(),
       durationInSeconds: 0,
       topRated: false
     };

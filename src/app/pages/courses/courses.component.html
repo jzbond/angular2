@@ -1,12 +1,12 @@
-<div *ngIf="!hasEditRequest()">
-  <courses-toolbar (find)="findCourses($event.name)" (add)="editCourse()"></courses-toolbar>
-  <div *ngIf="courses | async; let courses">
+<div *ngIf="!(selectedCourse | async)">
+  <courses-toolbar (find)="findCourses($event.name)" (add)="selectCourse()"></courses-toolbar>
+  <div *ngIf="courses | async as courses">
     <course-card *ngFor="let course of courses | orderByDate; trackBy: trackById;" [course]="course"
-                 (delete)="deleteCourse($event)" (edit)="editCourse($event.id)"></course-card>
+                 (delete)="deleteCourse($event)" (edit)="selectCourse($event.id)"></course-card>
     <div class="empty" *ngIf="courses.length === 0">No course available. Feel free to add the course.</div>
   </div>
 </div>
-<div *ngIf="hasEditRequest()">
-  <course-edit [course]="getEditCourse() | async"
-               (cancel)="cancelEdit()" (save)="saveCourse($event.course)"></course-edit>
+<div *ngIf="selectedCourse | async as course">
+  <course-edit [course]="selectedCourse | async"
+               (cancel)="cancelEdit()" (save)="saveCourse($event)"></course-edit>
 </div>
