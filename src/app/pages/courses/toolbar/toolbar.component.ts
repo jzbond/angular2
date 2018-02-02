@@ -8,6 +8,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output } from
 })
 export class ToolbarComponent implements OnInit {
   @Output() find = new EventEmitter();
+  @Output() add = new EventEmitter();
 
   constructor() {
   }
@@ -19,5 +20,9 @@ export class ToolbarComponent implements OnInit {
     this.find.emit({
       name: courseParam,
     });
+  }
+
+  addCourse() {
+    this.add.emit();
   }
 }

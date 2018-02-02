@@ -1,0 +1,35 @@
+<mat-card>
+  <div class="container">
+    <mat-form-field>
+      <span>Title</span>
+      <input matInput>
+    </mat-form-field>
+
+    <mat-form-field>
+      <span>Description</span>
+      <textarea matInput></textarea>
+    </mat-form-field>
+
+    <mat-form-field>
+      <span>Date</span>
+      <input matInput>
+    </mat-form-field>
+
+    <mat-form-field>
+      <span>Duration</span>
+      <div>
+        <input matInput #durationInMin>
+        <span>{{ durationInMin | duration }}</span>
+      </div>
+    </mat-form-field>
+
+    <mat-form-field>
+      <span>Authors</span>
+      <input matInput>
+    </mat-form-field>
+  </div>
+  <mat-card-actions>
+    <button mat-button (click)="saveCourse();">Save</button>
+    <button mat-button (click)="discard();">Cancel</button>
+  </mat-card-actions>
+</mat-card>

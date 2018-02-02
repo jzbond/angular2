@@ -4,6 +4,7 @@ import { AngularMaterialsModule } from '../../../angular-materials.module';
 import { LogoComponent } from '../logo/logo.component';
 import { HeaderComponent } from './header.component';
 import { UserInfoComponent } from '../userinfo/userinfo.component';
+import { AuthorizationService } from '../../../services/auth/authorization.service';
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;
@@ -12,7 +13,8 @@ describe('HeaderComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
         imports: [ AngularMaterialsModule ],
-        declarations: [ HeaderComponent, LogoComponent, UserInfoComponent, ]
+        declarations: [ HeaderComponent, LogoComponent, UserInfoComponent, ],
+        providers: [ AuthorizationService, ],
       })
       .compileComponents();
   }));

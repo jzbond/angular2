@@ -27,6 +27,7 @@ export class CourseComponent implements OnInit, OnDestroy, OnChanges, DoCheck, A
   private nextId = 0;
 
   @Output() delete = new EventEmitter();
+  @Output() edit = new EventEmitter();
   @Input() course: Course;
 
   constructor() {
@@ -36,6 +37,12 @@ export class CourseComponent implements OnInit, OnDestroy, OnChanges, DoCheck, A
     this.delete.emit({
       id: this.course.id,
       name: this.course.name
+    });
+  }
+
+  editCourse() {
+    this.edit.emit({
+      id: this.course.id,
     });
   }
 

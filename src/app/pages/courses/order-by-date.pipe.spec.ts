@@ -1,8 +1,8 @@
-import { OrderByCreatedDatePipe } from './order-by-created-date.pipe';
+import { OrderByDatePipe } from './order-by-date.pipe';
 import { Course } from '../../services/courses/course';
 
-describe('OrderByCreatedDatePipe', () => {
-  it('should order array by created dates', () => {
+describe('OrderByDatePipe', () => {
+  it('should order array by dates', () => {
     const courses: Course[] = [
       {
         id: 4,
@@ -74,7 +74,7 @@ describe('OrderByCreatedDatePipe', () => {
       }
     ];
 
-    const pipe = new OrderByCreatedDatePipe();
+    const pipe = new OrderByDatePipe();
 
     expect(pipe.transform(courses)).toEqual(sortedCourses);
   });

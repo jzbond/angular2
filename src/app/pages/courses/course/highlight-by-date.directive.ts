@@ -4,8 +4,8 @@ import { Moment } from 'moment';
 
 
 /**
- * Directives puts green border for fresh course ((courseCreatedDate < currentDate) && (courseCreatedDate >=
- * (currentDate - 14days))). For upcoming courses (courseCreatedDate > currentDate) blue border is used.
+ * Directives puts green border for fresh course ((courseDate < currentDate) && (courseDate >=
+ * (currentDate - 14days))). For upcoming courses (courseDate > currentDate) blue border is used.
  * Otherwise - no changes are made.
  */
 @Directive({
@@ -13,14 +13,14 @@ import { Moment } from 'moment';
 })
 export class HighlightByDateDirective implements OnInit {
   private currentDate: Moment;
-  @Input('highlightByDate') courseCreatedDate: Date;
+  @Input('highlightByDate') courseDate: Date;
 
   constructor(private courseCard: ElementRef) {
     this.currentDate = moment();
   }
 
   ngOnInit(): void {
-    const courseDate: Moment = moment(this.courseCreatedDate);
+    const courseDate: Moment = moment(this.courseDate);
     if (courseDate.isAfter(this.currentDate)) {
       this.courseCard.nativeElement.style.border = '1px solid blue';
     } else if (courseDate.isSameOrAfter(this.currentDate.subtract(14, 'days'))) {

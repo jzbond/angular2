@@ -1,6 +1,7 @@
-import { inject, TestBed } from '@angular/core/testing';
+import { async, inject, TestBed } from '@angular/core/testing';
 
 import { CoursesService } from './courses.service';
+import moment = require('moment');
 
 describe('CoursesService', () => {
   beforeEach(() => {
@@ -14,11 +15,10 @@ describe('CoursesService', () => {
   }));
 
   it('should return courses', inject([ CoursesService ], (service: CoursesService) => {
-    expect(service.listCourses().length).toBeGreaterThan(0);
+    service.coursesList.subscribe((courses) => expect(courses.length).toBeGreaterThan(0));
   }));
 
-  it('should return newly created course', inject([ CoursesService ], (service: CoursesService) => {
-    const existingCoursesNumber = service.listCourses().length;
+  it('should return newly created course name', async(inject([ CoursesService ], (service: CoursesService) => {
     const newCourse = {
       id: 0,
       name: 'nameNew',
@@ -28,29 +28,31 @@ describe('CoursesService', () => {
       durationInSeconds: 30 * 60,
       topRated: false,
     };
-    const savedCourse = service.createCourse(newCourse);
 
-    expect(savedCourse.id).toBe(existingCoursesNumber + 1);
-    expect(service.listCourses()[ existingCoursesNumber ]).toEqual(savedCourse);
-  }));
+    service.savedCourse.subscribe(name => expect(name).toEqual('nameNew'));
+    service.saveCourse(newCourse);
+  })));
 
-  it('should return existing course by id', inject([ CoursesService ], (service: CoursesService) => {
+  it('should return existing course by id', async(inject([ CoursesService ], (service: CoursesService) => {
     const existingCourse = {
       id: 3,
       name: 'TypeScript Basics',
       description: 'Introduction to TypeScript',
       type: 'video',
-      date: new Date(Date.UTC(2018, 4, 10)),
+      date: moment().utc().startOf('day').subtract(14, 'd').toDate(),
       durationInSeconds: 1.5 * 60 * 60,
       topRated: true,
     };
 
-    const course = service.getCourse(3);
+    service.selectedCourse.subscribe((course) => {
+      if (course && (course.id != -1)) {
+        expect(course).toEqual(existingCourse);
+      }
+    });
+    service.selectCourse(3);
+  })));
 
-    expect(course).toEqual(existingCourse);
-  }));
-
-  it('should return updated course', inject([ CoursesService ], (service: CoursesService) => {
+  it('should return updated course name', async(inject([ CoursesService ], (service: CoursesService) => {
     const updatedCourse = {
       id: 3,
       name: 'TypeScript Basics updated',
@@ -61,26 +63,12 @@ describe('CoursesService', () => {
       topRated: false,
     };
 
-    const course = service.updateCourse(updatedCourse);
+    service.savedCourse.subscribe(name => expect(name).toEqual('TypeScript Basics updated'));
+    service.saveCourse(updatedCourse);
+  })));
 
-    expect(service.getCourse(updatedCourse.id)).toEqual(updatedCourse);
-    expect(service.getCourse(updatedCourse.id)).toEqual(course);
-  }));
-
-  it('should return deleted course', inject([ CoursesService ], (service: CoursesService) => {
-    const deletedCourse = {
-      id: 3,
-      name: 'TypeScript Basics',
-      description: 'Introduction to TypeScript',
-      type: 'video',
-      date: new Date(Date.UTC(2018, 4, 10)),
-      durationInSeconds: 1.5 * 60 * 60,
-      topRated: true,
-    };
-
-    const course = service.removeCourse(3);
-
-    expect(course).toEqual(deletedCourse);
-    expect(service.getCourse(3)).not.toBeDefined();
-  }));
+  it('should return deleted course name', async(inject([ CoursesService ], (service: CoursesService) => {
+    service.savedCourse.subscribe(name => expect(name).toEqual('TypeScript Basics'));
+    service.removeCourse(3);
+  })));
 });

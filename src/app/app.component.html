@@ -1,4 +1,8 @@
-<app-header></app-header>
-<login-page *ngIf="!isAuthorized()"></login-page>
-<courses-list *ngIf="isAuthorized()"></courses-list>
-<app-footer></app-footer>
+<div class="app-root">
+  <app-header></app-header>
+  <div class="app-content">
+    <login-page *ngIf="!isAuthorized()"></login-page>
+    <courses-list *ngIf="isAuthorized()"></courses-list>
+  </div>
+  <app-footer></app-footer>
+</div>

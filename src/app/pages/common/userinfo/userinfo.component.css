@@ -1,4 +1,7 @@
 .info {
-  display: inline-block;
-  text-align: end;
+  margin: 1px;
+}
+
+.login {
+  text-align: center;
 }

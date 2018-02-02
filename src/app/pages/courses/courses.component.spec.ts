@@ -3,11 +3,8 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { AngularMaterialsModule } from '../../angular-materials.module';
 
 import { CoursesComponent } from './courses.component';
-import { CourseComponent } from './course/course.component';
-import { ToolbarComponent } from './toolbar/toolbar.component';
-import { HighlightByDateDirective } from './course/highlight-by-date.directive';
-import { DurationPipe } from './course/duration.pipe';
-import { OrderByCreatedDatePipe } from './order-by-created-date.pipe';
+import { CoursesService } from '../../services/courses/courses.service';
+import { CoursesModule } from './courses.module';
 
 describe('CoursesComponent', () => {
   let component: CoursesComponent;
@@ -15,14 +12,13 @@ describe('CoursesComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-        imports: [ AngularMaterialsModule, NoopAnimationsModule, ],
-        declarations: [
-          CoursesComponent,
-          CourseComponent,
-          ToolbarComponent,
-          HighlightByDateDirective,
-          DurationPipe,
-          OrderByCreatedDatePipe,
+        imports: [
+          AngularMaterialsModule,
+          NoopAnimationsModule,
+          CoursesModule,
+        ],
+        providers: [
+          CoursesService,
         ]
       })
       .compileComponents();
