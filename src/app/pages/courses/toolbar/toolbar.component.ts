@@ -18,7 +18,7 @@ export class ToolbarComponent implements OnInit {
 
   findCourses(courseParam: string) {
     this.find.emit({
-      name: courseParam,
+      name: courseParam.trim(),
     });
   }
 

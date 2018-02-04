@@ -5,6 +5,7 @@ import { AngularMaterialsModule } from '../../angular-materials.module';
 import { CoursesComponent } from './courses.component';
 import { CoursesService } from '../../services/courses/courses.service';
 import { CoursesModule } from './courses.module';
+import { HttpClientModule } from '@angular/common/http';
 
 describe('CoursesComponent', () => {
   let component: CoursesComponent;
@@ -16,6 +17,7 @@ describe('CoursesComponent', () => {
           AngularMaterialsModule,
           NoopAnimationsModule,
           CoursesModule,
+          HttpClientModule,
         ],
         providers: [
           CoursesService,
@@ -27,7 +29,6 @@ describe('CoursesComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(CoursesComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {

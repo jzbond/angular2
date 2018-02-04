@@ -1,152 +1,139 @@
 import { Injectable } from '@angular/core';
 import { Course } from './course';
-import * as _ from 'lodash';
 import * as moment from 'moment';
-import { Moment } from 'moment';
 import { Observable } from 'rxjs/Observable';
-import { delay, map, share, tap } from 'rxjs/operators';
-import { ReplaySubject } from 'rxjs/ReplaySubject';
+import { filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators';
 import { Subject } from 'rxjs/Subject';
-import 'rxjs/add/observable/timer';
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
+import { CoursesPage } from './courses-page';
+import { CoursesQueryParams } from './courses-query-params';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { of } from 'rxjs/observable/of';
+import { ReplaySubject } from 'rxjs/ReplaySubject';
 
 
 @Injectable()
 export class CoursesService {
 
-  private coursesMap: Map<number, Course>;
-  private courseName: string;
-  private outdatedTime: Moment;
+  private readonly SERVER_BASE_URL: String = 'http://localhost:3000';
 
-  private filterSubject = new ReplaySubject<string>();
+  private querySubject = new BehaviorSubject<CoursesQueryParams>({
+    courseName: '',
+    courseDate: moment(0),
+    pageSize: 2,
+    pageIndex: 0,
+  });
   private selectedCourseSubject = new ReplaySubject<number | null>(0);
   private deletedCourseSubject = new Subject<number>();
   private savedCourseSubject = new Subject<Course>();
 
-  public readonly coursesList: Observable<Course[]> = this.filterSubject.asObservable()
+  public readonly coursesList: Observable<CoursesPage> = this.querySubject.asObservable()
     .pipe(
-      tap(filter => this.courseName = filter),
-      map(filter => Array.from(this.coursesMap.values())
-        .filter((course) => !this.courseName || course.name.toLowerCase().includes(this.courseName))
-        .filter((course) => !this.outdatedTime || moment(course.date).isSameOrAfter(this.outdatedTime))
+      filter(query => query.courseName.length === 0 || query.courseName.length > 2),
+      map(query => new HttpParams()
+        .set('date_gte', query.courseDate.format('YYYY-MM-DD'))
+        .set('name_like', query.courseName)
+        .set('_limit', String(query.pageSize))
+        .set('_page', String(query.pageIndex + 1))
+        .set('_sort', 'date')
+        .set('_order', 'desc')
       ),
+      switchMap((params: HttpParams) => this.httpClient
+        .get<Course[]>(
+          `${this.SERVER_BASE_URL}/courses`,
+          {
+            observe: 'response',
+            responseType: 'json',
+            params,
+          }
+        ).pipe(
+          map((response: HttpResponse<Course[]>) => {
+            const courses = response.body!.map(course => {
+              return {
+                id: course.id,
+                name: course.name,
+                description: course.description,
+                type: course.type,
+                date: moment(course.date).toDate(),
+                durationInSeconds: course.durationInSeconds,
+                topRated: course.topRated,
+              };
+            });
+            return {
+              totalNumber: parseInt(response.headers.get('X-Total-Count')!) || 0,
+              courses: courses,
+            };
+          }),
+        )),
     );
 
   public readonly selectedCourse: Observable<Course | null> = this.selectedCourseSubject.asObservable()
     .pipe(
-      map((id) => {
-        if (id) {
-          return this.coursesMap.get(id) || {
-              id: -1,
-              name: '',
-              description: '',
-              type: '',
-              date: moment(0).toDate(),
-              durationInSeconds: 0,
-              topRated: false,
-            };
+      switchMap((id: number) => {
+        if (id === null) {
+          return of(null);
+        } else if (id === -1) {
+          return of({
+            id: -1,
+            name: '',
+            description: '',
+            type: '',
+            date: moment(0).toDate(),
+            durationInSeconds: 0,
+            topRated: false,
+          });
+        } else {
+          return this.httpClient.get<Course>(`${this.SERVER_BASE_URL}/courses/${id}`);
         }
-        return null;
       }),
     );
 
   public readonly savedCourse: Observable<string> = this.savedCourseSubject.asObservable()
     .pipe(
-      map((course) => {
-        if (course.id > 0) {
-          const savedCourse = _.cloneDeep(course);
-          savedCourse.id = this.coursesMap.size + 1;
-          return savedCourse;
+      mergeMap((course: Course) => {
+        let method = 'POST';
+        let url = `${this.SERVER_BASE_URL}/courses`;
+        if (course.id && course.id > -1) {
+          method = 'PUT';
+          url = `${url}/${course.id}`;
         }
-        return course;
+        return this.httpClient.request<Course>(
+          method,
+          url,
+          {
+            body: course,
+            headers: new HttpHeaders().set('Content-Type', 'application/json'),
+            observe: 'response',
+          }).pipe(
+          map((response: HttpResponse<Course>) => {
+            this.selectedCourseSubject.next(null);
+            this.querySubject.next(this.querySubject.getValue());
+            return response.body!.name;
+          }),
+        );
       }),
-      delay(500),// emulate initial http request
-      map(savedCourse => {
-        this.coursesMap.set(savedCourse.id, savedCourse);
-        return savedCourse.name;
-      }),
-      tap(() => this.selectedCourseSubject.next(null)),
-      tap(() => this.filterSubject.next(this.courseName)),
-      share(),
     );
 
   public readonly deletedCourse: Observable<string> = this.deletedCourseSubject.asObservable()
     .pipe(
-      delay(500),// emulate initial http request
-      map(id => {
-        const course = this.coursesMap.get(id);
-        this.coursesMap.delete(id);
-        return course ? course.name : '';
-      }),
-      tap(() => this.filterSubject.next(this.courseName)),
-      share(),
+      mergeMap((id: number) => this.httpClient
+        .delete<Course>(
+          `${this.SERVER_BASE_URL}/courses/${id}`,
+        ).pipe(
+          map(deletedCourse => {
+            this.querySubject.next(this.querySubject.getValue());
+            return deletedCourse.name;
+          }),
+        )
+      ),
+      shareReplay(1),
     );
 
-  constructor() {
-    this.coursesMap = new Map();
-    this.courseName = '';
+  constructor(private readonly httpClient: HttpClient) {
   }
 
-  public initCourses(outdatedTime?: Moment): void {
-    this.filterSubject.next('');
-    this.outdatedTime = outdatedTime || moment(0);
-    // emulate initial http request
-    Observable.timer(2000).pipe(
-      tap(() => {
-        const currentDate: Moment = moment().utc().startOf('day');
-        [
-          {
-            id: 1,
-            name: 'Angular 2 Basics',
-            description: 'Introduction to Angular 2',
-            type: 'video',
-            date: currentDate.clone().subtract(1, 'd').toDate(),
-            durationInSeconds: 2.5 * 60 * 60,
-            topRated: true,
-          }, {
-          id: 2,
-          name: 'Angular Materials Basics',
-          description: 'Introduction to Angular Materials',
-          type: 'video',
-          date: currentDate.clone().add(2, 'M').toDate(),
-          durationInSeconds: 0.75 * 60 * 60,
-          topRated: false,
-        }, {
-          id: 3,
-          name: 'TypeScript Basics',
-          description: 'Introduction to TypeScript',
-          type: 'video',
-          date: currentDate.clone().subtract(14, 'd').toDate(),
-          durationInSeconds: 1.5 * 60 * 60,
-          topRated: true,
-        }, {
-          id: 4,
-          name: 'JavaScript Basics',
-          description: 'Introduction to JavaScript',
-          type: 'video',
-          date: currentDate.clone().subtract(15, 'd').toDate(),
-          durationInSeconds: 2.5 * 60 * 60,
-          topRated: false,
-        } ]
-          .map(course => {
-            return {
-              id: course.id,
-              name: course.name,
-              description: course.description,
-              type: course.type,
-              date: course.date,
-              durationInSeconds: course.durationInSeconds,
-              topRated: course.topRated,
-            };
-          })
-          .map(course => this.coursesMap.set(course.id, course));
-
-      }),
-      tap(() => this.filterSubject.next('')),
-    ).subscribe();
-  }
-
-  public filterCourses(courseName?: string): void {
-    this.filterSubject.next(courseName ? courseName.toLowerCase() : '');
+  public fetchCourses(query: CoursesQueryParams): void {
+    this.querySubject.next(query);
   }
 
   public selectCourse(id?: number): void {

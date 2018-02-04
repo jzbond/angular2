@@ -1,0 +1,86 @@
+{
+  "courses": [
+    {
+      "id": 1,
+      "name": "Angular 2 Basics",
+      "description": "Introduction to Angular 2",
+      "type": "video",
+      "date": "2019-01-01",
+      "durationInSeconds": 9000,
+      "topRated": true
+    },
+    {
+      "id": 2,
+      "name": "Angular Materials Basics",
+      "description": "Introduction to Angular Materials",
+      "type": "video",
+      "date": "2019-04-01",
+      "durationInSeconds": 2700,
+      "topRated": false
+    },
+    {
+      "id": 3,
+      "name": "TypeScript Basics",
+      "description": "Introduction to TypeScript",
+      "type": "video",
+      "date": "2019-03-01",
+      "durationInSeconds": 5400,
+      "topRated": true
+    },
+    {
+      "id": 4,
+      "name": "JavaScript Basics",
+      "description": "Introduction to JavaScript",
+      "type": "video",
+      "date": "2018-12-01",
+      "durationInSeconds": 3600,
+      "topRated": false
+    },
+    {
+      "id": 5,
+      "name": "Unrelated course",
+      "description": "Outdated description",
+      "type": "text",
+      "date": "2017-12-01",
+      "durationInSeconds": 1800,
+      "topRated": false
+    }
+  ],
+  "logins": [
+    {
+      "id": "user1",
+      "token": "token_user_1"
+    },
+    {
+      "id": "test1",
+      "token": "token_test_1"
+    },
+    {
+      "id": "admin1",
+      "token": "token1_admin_1"
+    }
+  ],
+  "profiles": [
+    {
+      "id": 1,
+      "login": "user1",
+      "name": "User",
+      "surname": "Regular"
+    },
+    {
+      "id": 2,
+      "login": "test1",
+      "name": "Qa",
+      "surname": "Test"
+    },
+    {
+      "id": 3,
+      "login": "admin1",
+      "name": "Admin",
+      "surname": "Root"
+    }
+  ],
+  "status": {
+    "running": true
+  }
+}

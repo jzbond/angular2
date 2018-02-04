@@ -13,6 +13,7 @@ import { AboutComponent } from './pages/about/about.component';
 import { UserInfoComponent } from './pages/common/userinfo/userinfo.component';
 import { CoursesModule } from './pages/courses/courses.module';
 import { AuthorizationService } from './services/auth/authorization.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -27,8 +28,9 @@ import { AuthorizationService } from './services/auth/authorization.service';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    AngularMaterialsModule,
     FormsModule,
+    HttpClientModule,
+    AngularMaterialsModule,
     CoursesModule,
   ],
   providers: [

@@ -1,12 +1,14 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { CoursesService } from '../../services/courses/courses.service';
 import { Course } from '../../services/courses/course';
-import { MatDialog, MatSnackBar } from '@angular/material';
+import { MatDialog, MatSnackBar, PageEvent } from '@angular/material';
 import { CoursesConfirmationDialogComponent } from './courses-confirmation-dialog.component';
 import { Observable } from 'rxjs/Observable';
 import * as moment from 'moment';
 import { Moment } from 'moment';
-import { Subscription } from 'rxjs/Subscription';
+import { CoursesPage } from '../../services/courses/courses-page';
+import { Subject } from 'rxjs/Subject';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'courses-list',
@@ -16,37 +18,38 @@ import { Subscription } from 'rxjs/Subscription';
 })
 export class CoursesComponent implements OnInit, OnDestroy {
 
-  private outdatedTime: Moment;
-  private deletedCourseSubscription: Subscription;
-  private savedCourseSubscription: Subscription;
-  courses: Observable<Course[]>;
+  coursesPage: Observable<CoursesPage>;
   selectedCourse: Observable<Course | null>;
+  pageIndex: number;
+
+  private subscriptions: Subject<boolean> = new Subject();
+  private outdatedTime: Moment;
+  private courseName: string;
+  private pageSize: number;
+
 
   constructor(public dialog: MatDialog, public snackBar: MatSnackBar, private coursesService: CoursesService) {
     this.outdatedTime = moment().subtract(14, 'd');
-    this.courses = coursesService.coursesList;
-  }
-
-  private showNotification(message: string) {
-    this.snackBar.open(message, '', {
-      duration: 1000,
-    });
+    this.courseName = '';
+    this.pageSize = 2;
+    this.pageIndex = 0;
+    this.coursesPage = coursesService.coursesList;
   }
 
   ngOnInit() {
-    this.coursesService.initCourses(this.outdatedTime);
-    this.deletedCourseSubscription = this.coursesService.deletedCourse.subscribe(name => this.showNotification(`Deleted ${name} course`));
-    this.savedCourseSubscription = this.coursesService.savedCourse.subscribe(name => this.showNotification(`Saved ${name} course`));
+    this.fetchCourses();
+    this.coursesService.deletedCourse.pipe(takeUntil(this.subscriptions)).subscribe(name => this.showNotification(`Deleted ${name} course`));
+    this.coursesService.savedCourse.pipe(takeUntil(this.subscriptions)).subscribe(name => this.showNotification(`Saved ${name} course`));
     this.selectedCourse = this.coursesService.selectedCourse;
   }
 
   ngOnDestroy() {
-    this.deletedCourseSubscription.unsubscribe();
-    this.savedCourseSubscription.unsubscribe();
+    this.subscriptions.next();
+    this.subscriptions.unsubscribe();
   }
 
   trackById(index: number, course: Course): number {
-    return course.id;
+    return course.id!;
   }
 
   deleteCourse($event: { id: number, name: string }): void {
@@ -61,8 +64,16 @@ export class CoursesComponent implements OnInit, OnDestroy {
     });
   }
 
-  findCourses(courseName?: string): void {
-    this.coursesService.filterCourses(courseName);
+  findCourses(courseName: string): void {
+    this.courseName = courseName;
+    this.pageIndex = 0;
+    this.fetchCourses();
+  }
+
+  showPage(page: PageEvent) {
+    this.pageIndex = page.pageIndex;
+    this.pageSize = page.pageSize;
+    this.fetchCourses();
   }
 
   selectCourse(id?: number): void {
@@ -70,10 +81,26 @@ export class CoursesComponent implements OnInit, OnDestroy {
   }
 
   saveCourse(course: Course): void {
-    this.coursesService.saveCourse(course);
+    console.log(`Saving course ${JSON.stringify(course)}`);
+    // TODO: this.coursesService.saveCourse(course);
   }
 
   cancelEdit(): void {
     this.coursesService.cancel();
+  }
+
+  private fetchCourses() {
+    this.coursesService.fetchCourses({
+      courseName: this.courseName,
+      courseDate: this.outdatedTime,
+      pageSize: this.pageSize,
+      pageIndex: this.pageIndex,
+    });
+  }
+
+  private showNotification(message: string) {
+    this.snackBar.open(message, '', {
+      duration: 1000,
+    });
   }
 }
