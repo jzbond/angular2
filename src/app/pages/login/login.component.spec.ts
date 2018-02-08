@@ -4,6 +4,7 @@ import { AngularMaterialsModule } from '../../angular-materials.module';
 
 import { LoginComponent } from './login.component';
 import { AuthorizationService } from '../../services/auth/authorization.service';
+import { AuthorizationServiceStub } from '../../services/auth/authorization.service.stub';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -13,7 +14,7 @@ describe('LoginComponent', () => {
     TestBed.configureTestingModule({
         declarations: [ LoginComponent ],
         imports: [ AngularMaterialsModule, NoopAnimationsModule ],
-        providers: [ AuthorizationService, ],
+        providers: [ { provide: AuthorizationService, useClass: AuthorizationServiceStub } ],
       })
       .compileComponents();
   }));

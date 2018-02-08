@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { AuthorizationService } from '../../../services/auth/authorization.service';
 import { Observable } from 'rxjs/Observable';
 import { User } from '../../../services/auth/user';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-header',
@@ -9,15 +10,21 @@ import { User } from '../../../services/auth/user';
   styleUrls: [ './header.component.css' ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnInit, OnDestroy {
+  private logoutSubscription: Subscription;
 
-  login: Observable<User>;
+  profile: Observable<User>;
 
   constructor(private authService: AuthorizationService) {
   }
 
   ngOnInit() {
-    this.login = this.authService.userLogin;
+    this.profile = this.authService.profile;
+    this.logoutSubscription = this.authService.userLogout.subscribe();
+  }
+
+  ngOnDestroy() {
+    this.logoutSubscription.unsubscribe();
   }
 
   logout(login: string): void {

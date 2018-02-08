@@ -46,7 +46,7 @@
       "topRated": false
     }
   ],
-  "logins": [
+  "login": [
     {
       "id": "user1",
       "token": "token_user_1"
@@ -62,20 +62,17 @@
   ],
   "profiles": [
     {
-      "id": 1,
-      "login": "user1",
+      "id": "user1",
       "name": "User",
       "surname": "Regular"
     },
     {
-      "id": 2,
-      "login": "test1",
+      "id": "test1",
       "name": "Qa",
       "surname": "Test"
     },
     {
-      "id": 3,
-      "login": "admin1",
+      "id": "admin1",
       "name": "Admin",
       "surname": "Root"
     }

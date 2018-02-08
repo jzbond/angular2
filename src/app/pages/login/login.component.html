@@ -7,6 +7,6 @@
       <input matInput type="password" placeholder="Password" #pass>
       <mat-icon matSuffix>visibility_off</mat-icon>
     </mat-form-field>
-    <button mat-button (click)="loginUser(login.value, pass.value)">Enter</button>
+    <button mat-button (click)="loginUser(login.value.trim(), pass.value)">Enter</button>
   </div>
 </div>

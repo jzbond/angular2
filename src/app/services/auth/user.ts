@@ -1,3 +1,5 @@
 export interface User {
-  login: string;
+  id: string;
+  name?: string;
+  surname?: string;
 }

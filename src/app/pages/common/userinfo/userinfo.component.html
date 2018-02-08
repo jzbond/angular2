@@ -1,4 +1,4 @@
-<div class="info" *ngIf="login">
-  <div class="login">{{ login }}</div>
+<div class="info" *ngIf="profile.id">
+  <div class="login">{{ profile.name }}, {{profile.surname}}</div>
   <button mat-button (click)="logout();">Logoff</button>
 </div>

@@ -15,7 +15,7 @@ import { ReplaySubject } from 'rxjs/ReplaySubject';
 @Injectable()
 export class CoursesService {
 
-  private readonly SERVER_BASE_URL: String = 'http://localhost:3000';
+  private static readonly SERVER_BASE_URL: String = 'http://localhost:3000';
 
   private querySubject = new BehaviorSubject<CoursesQueryParams>({
     courseName: '',
@@ -40,7 +40,7 @@ export class CoursesService {
       ),
       switchMap((params: HttpParams) => this.httpClient
         .get<Course[]>(
-          `${this.SERVER_BASE_URL}/courses`,
+          `${CoursesService.SERVER_BASE_URL}/courses`,
           {
             observe: 'response',
             responseType: 'json',
@@ -83,7 +83,7 @@ export class CoursesService {
             topRated: false,
           });
         } else {
-          return this.httpClient.get<Course>(`${this.SERVER_BASE_URL}/courses/${id}`);
+          return this.httpClient.get<Course>(`${CoursesService.SERVER_BASE_URL}/courses/${id}`);
         }
       }),
     );
@@ -92,7 +92,7 @@ export class CoursesService {
     .pipe(
       mergeMap((course: Course) => {
         let method = 'POST';
-        let url = `${this.SERVER_BASE_URL}/courses`;
+        let url = `${CoursesService.SERVER_BASE_URL}/courses`;
         if (course.id && course.id > -1) {
           method = 'PUT';
           url = `${url}/${course.id}`;
@@ -118,7 +118,7 @@ export class CoursesService {
     .pipe(
       mergeMap((id: number) => this.httpClient
         .delete<Course>(
-          `${this.SERVER_BASE_URL}/courses/${id}`,
+          `${CoursesService.SERVER_BASE_URL}/courses/${id}`,
         ).pipe(
           map(deletedCourse => {
             this.querySubject.next(this.querySubject.getValue());
