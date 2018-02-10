@@ -1,12 +1,16 @@
 <div class="login-form">
-  <div class="login-form-content">
+  <form class="login-form-content" #authForm="ngForm"
+        (ngSubmit)="loginUser(authForm.value.login.trim(), authForm.value.password.trim())">
+
     <mat-form-field class="form-input" floatLabel="never">
-      <input matInput placeholder="Login" #login>
+      <input matInput placeholder="Login" required ngModel name="login" #login="ngModel">
     </mat-form-field>
+
     <mat-form-field class="form-input" floatLabel="never">
-      <input matInput type="password" placeholder="Password" #pass>
+      <input matInput type="password" placeholder="Password" required ngModel name="password">
       <mat-icon matSuffix>visibility_off</mat-icon>
     </mat-form-field>
-    <button mat-button (click)="loginUser(login.value.trim(), pass.value)">Enter</button>
-  </div>
+
+    <button mat-button type="submit" [disabled]="!authForm.form.valid">Enter</button>
+  </form>
 </div>

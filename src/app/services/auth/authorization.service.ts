@@ -80,10 +80,6 @@ export class AuthorizationService {
     return localStorage.getItem(AuthorizationService.USER_TOKEN) != null;
   }
 
-  public getAuthToken(): string {
-    return this.getLocalStorageValue().token;
-  }
-
   protected getLocalStorageValue(): Token {
     return JSON.parse(localStorage.getItem(AuthorizationService.USER_TOKEN)!);
   }
