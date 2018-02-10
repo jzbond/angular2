@@ -1,34 +1,38 @@
 <mat-card>
   <div class="container">
-    <mat-form-field>
-      <span>Title</span>
-      <input matInput>
-    </mat-form-field>
+    <div class="titles">
+      <div class="row title">Title</div>
+      <div class="row title">Description</div>
+      <div class="row title">Date</div>
+      <div class="row title">Duration</div>
+      <div class="row title">Authors</div>
+    </div>
 
-    <mat-form-field>
-      <span>Description</span>
-      <textarea matInput></textarea>
-    </mat-form-field>
+    <div class="inputs">
+      <mat-form-field class="row">
+        <input matInput>
+      </mat-form-field>
 
-    <mat-form-field>
-      <span>Date</span>
-      <input matInput>
-    </mat-form-field>
+      <mat-form-field class="row">
+        <textarea matInput></textarea>
+      </mat-form-field>
 
-    <mat-form-field>
-      <span>Duration</span>
-      <div>
-        <input matInput #durationInMin>
-        <span>{{ durationInMin | duration }}</span>
-      </div>
-    </mat-form-field>
+      <mat-form-field class="row">
+        <input matInput>
+      </mat-form-field>
 
-    <mat-form-field>
-      <span>Authors</span>
-      <input matInput>
-    </mat-form-field>
+      <mat-form-field class="row">
+        <div class="duration">
+          <input matInput #durationInMin>
+          <div>{{ durationInMin | duration }}</div>
+        </div>
+      </mat-form-field>
+      <mat-form-field class="row">
+        <input matInput>
+      </mat-form-field>
+    </div>
   </div>
-  <mat-card-actions>
+  <mat-card-actions align="center">
     <button mat-button (click)="saveCourse();">Save</button>
     <button mat-button (click)="discard();">Cancel</button>
   </mat-card-actions>
