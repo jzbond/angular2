@@ -83,6 +83,7 @@ export class CoursesComponent implements OnInit, OnDestroy {
   saveCourse(course: Course): void {
     console.log(`Saving course ${JSON.stringify(course)}`);
     // TODO: this.coursesService.saveCourse(course);
+    this.coursesService.cancel();
   }
 
   cancelEdit(): void {

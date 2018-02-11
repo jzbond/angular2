@@ -16,17 +16,38 @@
 }
 
 .row {
-  min-height: 5em;
-  padding-right: 1em;
+  height: 5.5em;
   padding-left: 1em;
 }
 
 .title {
-  display:flex;
-  align-items:center;
-  justify-content:flex-end;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.value {
+  display: flex;
+  align-items: stretch;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.value input, textarea {
+  padding-left: 1em;
 }
 
 .duration {
   display: flex;
+}
+
+.duration-value {
+  margin-left: 1em;
+  width: 10em;
+  text-align: end;
+}
+
+mat-form-field .ng-invalid.ng-touched {
+  border: 1px solid red;
+  border-radius: 5px;
 }
