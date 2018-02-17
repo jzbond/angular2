@@ -11,11 +11,13 @@ import { DurationPipe } from './course/duration.pipe';
 import { OrderByDatePipe } from './order-by-date.pipe';
 import { CoursesService } from '../../services/courses/courses.service';
 import { EditComponent } from './edit/edit.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
   imports: [
     CommonModule,
+    ReactiveFormsModule,
     AngularMaterialsModule,
   ],
   declarations: [

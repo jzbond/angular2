@@ -10,14 +10,12 @@ import { User } from '../../../services/auth/user';
 export class UserInfoComponent {
 
   @Output() logoff = new EventEmitter<User>();
-  @Input() login: string;
+  @Input() profile: User;
 
   constructor() {
   }
 
   logout(): void {
-    this.logoff.emit({
-      login: this.login
-    });
+    this.logoff.emit(this.profile);
   }
 }

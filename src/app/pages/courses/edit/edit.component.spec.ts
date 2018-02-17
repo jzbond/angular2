@@ -4,6 +4,7 @@ import { AngularMaterialsModule } from '../../../angular-materials.module';
 
 import { EditComponent } from './edit.component';
 import { DurationPipe } from '../course/duration.pipe';
+import { ReactiveFormsModule } from '@angular/forms';
 
 describe('EditComponent', () => {
   let component: EditComponent;
@@ -12,7 +13,7 @@ describe('EditComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
         declarations: [ EditComponent, DurationPipe, ],
-        imports: [ AngularMaterialsModule, NoopAnimationsModule, ],
+        imports: [ AngularMaterialsModule, NoopAnimationsModule, ReactiveFormsModule ],
       })
       .compileComponents();
   }));

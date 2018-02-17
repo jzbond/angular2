@@ -1,48 +1,71 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { delay, map, share, tap } from 'rxjs/operators';
+import { catchError, share, shareReplay, switchMap } from 'rxjs/operators';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { User } from './user';
 import { Login } from './login';
+import { HttpClient } from '@angular/common/http';
+import { Token } from './token';
+import { of as observableOf } from 'rxjs/observable/of';
 
 
 @Injectable()
 export class AuthorizationService {
+  private static readonly SERVER_BASE_URL: String = 'http://localhost:3000';
   static readonly USER_TOKEN = 'user';
 
   private loginSubject = new ReplaySubject<Login>(1);
   private logoutSubject = new ReplaySubject<User>(1);
 
-  public readonly userLogin: Observable<User> = this.loginSubject.asObservable()
+  public readonly profile: Observable<User> = this.loginSubject.asObservable()
     .pipe(
-      tap(resp => {
-        if (resp.login) {
-          // emulate http request
-          return delay(500);
+      switchMap((login: Login) => {
+          if (this.isAuthenticated()) {
+            const value = this.getLocalStorageValue();
+            console.log(`Restoring credentials: ${value.id}`);
+            return observableOf(value);
+          } else if (login.login) {
+            return this.httpClient
+              .get<Token>(
+                `${AuthorizationService.SERVER_BASE_URL}/login/${login.login}`,
+              ).pipe(
+                catchError(() => observableOf({ id: '', token: '' })),
+              );
+          } else {
+            return observableOf({ id: '', token: '' });
+          }
+        }
+      ),
+      switchMap((authToken: Token) => {
+        if (authToken.id) {
+          localStorage.setItem(AuthorizationService.USER_TOKEN, JSON.stringify(authToken));
+          console.log(`User ${authToken.id} logged in`);
+          return this.httpClient.get<User>(`${AuthorizationService.SERVER_BASE_URL}/profiles/${authToken.id}`);
+        } else {
+          return observableOf({ id: '' });
         }
       }),
-      tap(resp => {
-        if (resp.login) {
-          localStorage.setItem(AuthorizationService.USER_TOKEN, JSON.stringify(resp));
-          console.log(`User ${resp.login} logged in`);
-        }
-      }),
-      map(resp => {
-        return { login: resp.login };
-      }),
-      share(),
+      catchError(() => observableOf({ id: '' })),
+      shareReplay(),
     );
 
   public readonly userLogout: Observable<User> = this.logoutSubject.asObservable()
     .pipe(
-      tap((login) => console.log(`User ${login} logged out`)),
-      tap(() => localStorage.removeItem(AuthorizationService.USER_TOKEN)),
-      tap(() => this.login('', '')),
+      switchMap((user: User) => {
+        console.log(`User ${user.id} logged out`);
+        localStorage.removeItem(AuthorizationService.USER_TOKEN);
+        this.login('', '');
+        return observableOf(user);
+      }),
       share(),
     );
 
-  constructor() {
+  constructor(private readonly httpClient: HttpClient) {
     this.userLogout.subscribe();
+  }
+
+  public init(): void {
+    this.login('', '');
   }
 
   public login(login: string, password: string): void {
@@ -50,22 +73,14 @@ export class AuthorizationService {
   }
 
   public logout(login: string): void {
-    this.logoutSubject.next({ login });
-  }
-
-  public init(): void {
-    if (this.isAuthenticated()) {
-      const value = this.getLocalStorageValue();
-      console.log(`Restoring credentials: ${value.login}`);
-      this.login(value.login, value.password);
-    }
+    this.logoutSubject.next({ id: login });
   }
 
   public isAuthenticated(): boolean {
     return localStorage.getItem(AuthorizationService.USER_TOKEN) != null;
   }
 
-  private getLocalStorageValue() {
-    return JSON.parse(localStorage.getItem(AuthorizationService.USER_TOKEN) || '{}');
+  protected getLocalStorageValue(): Token {
+    return JSON.parse(localStorage.getItem(AuthorizationService.USER_TOKEN)!);
   }
 }

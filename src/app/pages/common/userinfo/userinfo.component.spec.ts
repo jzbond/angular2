@@ -16,6 +16,9 @@ describe('UserInfoComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(UserInfoComponent);
     component = fixture.componentInstance;
+    component.profile = {
+      id: 'test',
+    };
     fixture.detectChanges();
   });
 

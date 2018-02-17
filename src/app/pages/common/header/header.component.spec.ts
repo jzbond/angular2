@@ -5,6 +5,7 @@ import { LogoComponent } from '../logo/logo.component';
 import { HeaderComponent } from './header.component';
 import { UserInfoComponent } from '../userinfo/userinfo.component';
 import { AuthorizationService } from '../../../services/auth/authorization.service';
+import { AuthorizationServiceStub } from '../../../services/auth/authorization.service.stub';
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;
@@ -14,7 +15,7 @@ describe('HeaderComponent', () => {
     TestBed.configureTestingModule({
         imports: [ AngularMaterialsModule ],
         declarations: [ HeaderComponent, LogoComponent, UserInfoComponent, ],
-        providers: [ AuthorizationService, ],
+        providers: [ { provide: AuthorizationService, useClass: AuthorizationServiceStub } ],
       })
       .compileComponents();
   }));

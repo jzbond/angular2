@@ -13,6 +13,8 @@ import { AboutComponent } from './pages/about/about.component';
 import { UserInfoComponent } from './pages/common/userinfo/userinfo.component';
 import { CoursesModule } from './pages/courses/courses.module';
 import { AuthorizationService } from './services/auth/authorization.service';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { AuthorizationInterceptor } from './services/auth/authorization.interceptor';
 
 @NgModule({
   declarations: [
@@ -27,12 +29,14 @@ import { AuthorizationService } from './services/auth/authorization.service';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    AngularMaterialsModule,
     FormsModule,
+    HttpClientModule,
+    AngularMaterialsModule,
     CoursesModule,
   ],
   providers: [
     AuthorizationService,
+    { provide: HTTP_INTERCEPTORS, useClass: AuthorizationInterceptor, multi: true },
   ],
   bootstrap: [ AppComponent ]
 })
