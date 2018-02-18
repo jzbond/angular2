@@ -1,20 +1,14 @@
-<div *ngIf="!(selectedCourse | async)">
-  <courses-toolbar (find)="findCourses($event.name)" (add)="selectCourse()"></courses-toolbar>
-  <div *ngIf="coursesPage | async as coursesPage">
-    <div *ngIf="coursesPage.courses.length > 0">
-      <course-card *ngFor="let course of coursesPage.courses | orderByDate; trackBy: trackById;" [course]="course"
-                   (delete)="deleteCourse($event)" (edit)="selectCourse($event.id)"></course-card>
-      <mat-paginator [length]="coursesPage.totalNumber"
-                     [pageIndex]="pageIndex"
-                     [pageSize]="2"
-                     [pageSizeOptions]="[1, 2, 3, 10]"
-                     (page)="showPage($event)">
-      </mat-paginator>
-    </div>
-    <div class="empty" *ngIf="coursesPage.courses.length < 1">No course available. Feel free to add the course.</div>
+<courses-toolbar (find)="findCourses($event.name)" (add)="createCourse()"></courses-toolbar>
+<div *ngIf="coursesPage | async as coursesPage">
+  <div *ngIf="coursesPage.courses.length > 0">
+    <course-card *ngFor="let course of coursesPage.courses | orderByDate; trackBy: trackById;" [course]="course"
+                 (delete)="deleteCourse($event)" (edit)="editCourse($event.id)"></course-card>
+    <mat-paginator [length]="coursesPage.totalNumber"
+                   [pageIndex]="pageIndex"
+                   [pageSize]="2"
+                   [pageSizeOptions]="[1, 2, 3, 10]"
+                   (page)="showPage($event)">
+    </mat-paginator>
   </div>
-</div>
-<div *ngIf="selectedCourse | async as course">
-  <course-edit [course]="selectedCourse | async"
-               (cancel)="cancelEdit()" (save)="saveCourse($event)"></course-edit>
+  <div class="empty" *ngIf="coursesPage.courses.length < 1">No course available. Feel free to add the course.</div>
 </div>

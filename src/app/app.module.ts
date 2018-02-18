@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { AngularMaterialsModule } from './angular-materials.module';
 
 import { AppComponent } from './app.component';
+import { AppRoutingModule } from './app-routing.module';
 import { HeaderComponent } from './pages/common/header/header.component';
 import { FooterComponent } from './pages/common/footer/footer.component';
 import { LogoComponent } from './pages/common/logo/logo.component';
@@ -15,6 +16,9 @@ import { CoursesModule } from './pages/courses/courses.module';
 import { AuthorizationService } from './services/auth/authorization.service';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AuthorizationInterceptor } from './services/auth/authorization.interceptor';
+import { AuthorizedGuard } from './services/auth/authorized.guard';
+import { ErrorComponent } from './pages/error/error.component';
+import { NotificationService } from './services/notification/notification.service';
 
 @NgModule({
   declarations: [
@@ -25,6 +29,7 @@ import { AuthorizationInterceptor } from './services/auth/authorization.intercep
     LoginComponent,
     AboutComponent,
     UserInfoComponent,
+    ErrorComponent,
   ],
   imports: [
     BrowserModule,
@@ -33,10 +38,13 @@ import { AuthorizationInterceptor } from './services/auth/authorization.intercep
     HttpClientModule,
     AngularMaterialsModule,
     CoursesModule,
+    AppRoutingModule,
   ],
   providers: [
     AuthorizationService,
+    AuthorizedGuard,
     { provide: HTTP_INTERCEPTORS, useClass: AuthorizationInterceptor, multi: true },
+    NotificationService,
   ],
   bootstrap: [ AppComponent ]
 })

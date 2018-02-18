@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
+import { RouterTestingModule } from '@angular/router/testing';
 import { AngularMaterialsModule } from '../../angular-materials.module';
 
 import { LoginComponent } from './login.component';
@@ -14,7 +15,7 @@ describe('LoginComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
         declarations: [ LoginComponent ],
-        imports: [ AngularMaterialsModule, NoopAnimationsModule, FormsModule ],
+        imports: [ AngularMaterialsModule, NoopAnimationsModule, FormsModule, RouterTestingModule ],
         providers: [ { provide: AuthorizationService, useClass: AuthorizationServiceStub } ],
       })
       .compileComponents();

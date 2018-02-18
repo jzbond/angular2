@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+
 import { Course } from '../../../services/courses/course';
 
 @Component({
@@ -26,7 +27,10 @@ export class EditComponent implements OnChanges {
     });
   }
 
-  ngOnChanges() {
+  ngOnChanges(changes: SimpleChanges): void {
+    if (!changes[ 'course' ]) {
+      return;
+    }
     if (!this.course) {
       this.editForm.setValue({
         title: '',
@@ -47,6 +51,15 @@ export class EditComponent implements OnChanges {
   }
 
   saveCourse() {
+    this.course = {
+      id: this.course.id,
+      name: this.title.value,
+      description: this.description.value,
+      date: this.date.value,
+      durationInSeconds: Number(this.durationInMin.value),
+      type: 'video',
+      topRated: false,
+    };
     this.save.emit(this.course);
   }
 
