@@ -1,8 +1,11 @@
 mat-toolbar {
-  overflow: visible;
-  height: 75px;
+  height: 100%;
 }
 
-.filler {
-  flex: 1 1 auto;
+app-logo {
+  flex: initial;
+}
+
+app-breadcrumb {
+  flex: auto;
 }
