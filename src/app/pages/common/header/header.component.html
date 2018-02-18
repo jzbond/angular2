@@ -1,6 +1,6 @@
 <mat-toolbar>
   <app-logo></app-logo>
-  <div class="filler"></div>
+  <app-breadcrumb></app-breadcrumb>
   <user-info *ngIf="profile | async as profile" [profile]="profile"
              (logoff)="logout($event.login)"></user-info>
 </mat-toolbar>
