@@ -44,6 +44,24 @@
       "date": "2017-12-01",
       "durationInSeconds": 1800,
       "topRated": false
+    },
+    {
+      "id": 6,
+      "name": "RxJS In Practice",
+      "description": "Observables and Subjects",
+      "date": "2019-01-01",
+      "durationInSeconds": 14400,
+      "type": "video",
+      "topRated": false
+    },
+    {
+      "name": "Ngrx Architecture",
+      "description": "Ngrx style application pros and cons",
+      "date": "2019-06-01",
+      "durationInSeconds": 7200,
+      "type": "video",
+      "topRated": false,
+      "id": 7
     }
   ],
   "login": [
