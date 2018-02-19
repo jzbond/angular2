@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { AngularMaterialsModule } from '../../../angular-materials.module';
 
 import { HeaderComponent } from './header.component';
@@ -11,6 +12,7 @@ import { BreadcrumbComponent } from '../breadcrumb/breadcrumb.component';
   imports: [
     CommonModule,
     AngularMaterialsModule,
+    RouterModule,
   ],
   declarations: [
     HeaderComponent,
