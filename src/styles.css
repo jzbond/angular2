@@ -8,3 +8,11 @@ html, body {
   left:0;
   right:0;
 }
+
+*:visited {
+  color: black;
+}
+
+a {
+  text-decoration: none;
+}

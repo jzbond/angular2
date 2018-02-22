@@ -1,0 +1,21 @@
+.breadcrumb {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-content: center;
+  padding-left: 5%;
+  font-weight: 400;
+}
+
+.active {
+  margin-top: -1px;
+  font-weight: 700;
+}
+
+.link {
+  margin-left: 1%;
+}
+
+.link:before {
+  content: ">";
+}

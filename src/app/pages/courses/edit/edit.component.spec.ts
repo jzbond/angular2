@@ -1,10 +1,10 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { ReactiveFormsModule } from '@angular/forms';
 import { AngularMaterialsModule } from '../../../angular-materials.module';
 
 import { EditComponent } from './edit.component';
 import { DurationPipe } from '../course/duration.pipe';
-import { ReactiveFormsModule } from '@angular/forms';
 
 describe('EditComponent', () => {
   let component: EditComponent;

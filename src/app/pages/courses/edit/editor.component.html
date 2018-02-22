@@ -1,0 +1,4 @@
+<div>
+  <course-edit [course]="course | async"
+               (cancel)="discard()" (save)="saveCourse($event)"></course-edit>
+</div>

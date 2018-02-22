@@ -1,9 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { AngularMaterialsModule } from '../../../angular-materials.module';
-
-import { LogoComponent } from '../logo/logo.component';
+import { RouterTestingModule } from '@angular/router/testing';
+import { HeaderModule } from './header.module';
 import { HeaderComponent } from './header.component';
-import { UserInfoComponent } from '../userinfo/userinfo.component';
 import { AuthorizationService } from '../../../services/auth/authorization.service';
 import { AuthorizationServiceStub } from '../../../services/auth/authorization.service.stub';
 
@@ -13,8 +11,7 @@ describe('HeaderComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-        imports: [ AngularMaterialsModule ],
-        declarations: [ HeaderComponent, LogoComponent, UserInfoComponent, ],
+        imports: [ HeaderModule, RouterTestingModule ],
         providers: [ { provide: AuthorizationService, useClass: AuthorizationServiceStub } ],
       })
       .compileComponents();

@@ -4,8 +4,16 @@
   flex-flow: column;
 }
 
+app-header {
+  flex: initial;
+}
+
 .app-content {
-  flex: 1 1 auto;
+  flex: auto;
   overflow-y: auto;
   padding: 16px;
+}
+
+app-footer {
+  flex: initial;
 }

@@ -201,7 +201,6 @@ describe('CoursesService', () => {
   it('should return empty course object', inject([ CoursesService ], (service: CoursesService) => {
     service.selectedCourse.subscribe((course) => {
       expect(course!).toEqual({
-        id: -1,
         name: '',
         description: '',
         type: '',

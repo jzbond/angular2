@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Course } from './course';
 import * as moment from 'moment';
 import { Observable } from 'rxjs/Observable';
-import { filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators';
+import { filter, map, mergeMap, switchMap } from 'rxjs/operators';
 import { Subject } from 'rxjs/Subject';
 import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
 import { CoursesPage } from './courses-page';
@@ -67,14 +67,11 @@ export class CoursesService {
         )),
     );
 
-  public readonly selectedCourse: Observable<Course | null> = this.selectedCourseSubject.asObservable()
+  public readonly selectedCourse: Observable<Course> = this.selectedCourseSubject.asObservable()
     .pipe(
       switchMap((id: number) => {
-        if (id === null) {
-          return of(null);
-        } else if (id === -1) {
+        if (id === -1) {
           return of({
-            id: -1,
             name: '',
             description: '',
             type: '',
@@ -106,7 +103,6 @@ export class CoursesService {
             observe: 'response',
           }).pipe(
           map((response: HttpResponse<Course>) => {
-            this.selectedCourseSubject.next(null);
             this.querySubject.next(this.querySubject.getValue());
             return response.body!.name;
           }),
@@ -126,7 +122,6 @@ export class CoursesService {
           }),
         )
       ),
-      shareReplay(1),
     );
 
   constructor(private readonly httpClient: HttpClient) {
@@ -146,9 +141,5 @@ export class CoursesService {
 
   public removeCourse(id: number): void {
     this.deletedCourseSubject.next(id);
-  }
-
-  public cancel(): void {
-    this.selectedCourseSubject.next(null);
   }
 }

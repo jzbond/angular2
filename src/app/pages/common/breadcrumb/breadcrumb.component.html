@@ -1,0 +1,8 @@
+<div class="breadcrumb">
+  <a routerLink="/courses" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+    Courses
+  </a>
+  <div class="link active" *ngIf="currentPage | async as label">
+    {{label}}
+  </div>
+</div>

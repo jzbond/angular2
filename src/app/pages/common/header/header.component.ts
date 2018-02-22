@@ -1,8 +1,10 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
-import { AuthorizationService } from '../../../services/auth/authorization.service';
+import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
-import { User } from '../../../services/auth/user';
 import { Subscription } from 'rxjs/Subscription';
+
+import { AuthorizationService } from '../../../services/auth/authorization.service';
+import { User } from '../../../services/auth/user';
 
 @Component({
   selector: 'app-header',
@@ -15,12 +17,15 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   profile: Observable<User>;
 
-  constructor(private authService: AuthorizationService) {
+  constructor(private authService: AuthorizationService, private router: Router) {
   }
 
   ngOnInit() {
     this.profile = this.authService.profile;
-    this.logoutSubscription = this.authService.userLogout.subscribe();
+    this.logoutSubscription = this.authService.userLogout.subscribe(() => {
+      this.router.navigate([ '/login' ]);
+    });
+    this.authService.init();
   }
 
   ngOnDestroy() {

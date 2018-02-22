@@ -1,4 +1,7 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { Subscription } from 'rxjs/Subscription';
+
 import { AuthorizationService } from '../../services/auth/authorization.service';
 
 @Component({
@@ -7,12 +10,21 @@ import { AuthorizationService } from '../../services/auth/authorization.service'
   styleUrls: [ './login.component.css' ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
 
-  constructor(private authService: AuthorizationService) {
+  private loginSubscription: Subscription;
+
+  constructor(private authService: AuthorizationService, private router: Router) {
   }
 
   ngOnInit() {
+    this.loginSubscription = this.authService.profile.subscribe(() => {
+      this.router.navigate([ '/' ]);
+    });
+  }
+
+  ngOnDestroy() {
+    this.loginSubscription.unsubscribe();
   }
 
   loginUser(userLogin: string, userPassword: string): void {

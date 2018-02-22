@@ -1,14 +1,17 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
-import { CoursesService } from '../../services/courses/courses.service';
-import { Course } from '../../services/courses/course';
-import { MatDialog, MatSnackBar, PageEvent } from '@angular/material';
-import { CoursesConfirmationDialogComponent } from './courses-confirmation-dialog.component';
+import { Router } from '@angular/router';
+import { MatDialog, PageEvent } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
-import * as moment from 'moment';
-import { Moment } from 'moment';
-import { CoursesPage } from '../../services/courses/courses-page';
 import { Subject } from 'rxjs/Subject';
 import { takeUntil } from 'rxjs/operators';
+import * as moment from 'moment';
+import { Moment } from 'moment';
+
+import { CoursesService } from '../../services/courses/courses.service';
+import { NotificationService } from '../../services/notification/notification.service';
+import { Course } from '../../services/courses/course';
+import { CoursesConfirmationDialogComponent } from './courses-confirmation-dialog.component';
+import { CoursesPage } from '../../services/courses/courses-page';
 
 @Component({
   selector: 'courses-list',
@@ -28,7 +31,7 @@ export class CoursesComponent implements OnInit, OnDestroy {
   private pageSize: number;
 
 
-  constructor(public dialog: MatDialog, public snackBar: MatSnackBar, private coursesService: CoursesService) {
+  constructor(private dialog: MatDialog, private notification: NotificationService, private coursesService: CoursesService, private router: Router) {
     this.outdatedTime = moment().subtract(14, 'd');
     this.courseName = '';
     this.pageSize = 2;
@@ -38,8 +41,7 @@ export class CoursesComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.fetchCourses();
-    this.coursesService.deletedCourse.pipe(takeUntil(this.subscriptions)).subscribe(name => this.showNotification(`Deleted ${name} course`));
-    this.coursesService.savedCourse.pipe(takeUntil(this.subscriptions)).subscribe(name => this.showNotification(`Saved ${name} course`));
+    this.coursesService.deletedCourse.pipe(takeUntil(this.subscriptions)).subscribe(() => this.notification.show(`Deleted course`));
     this.selectedCourse = this.coursesService.selectedCourse;
   }
 
@@ -76,18 +78,12 @@ export class CoursesComponent implements OnInit, OnDestroy {
     this.fetchCourses();
   }
 
-  selectCourse(id?: number): void {
-    this.coursesService.selectCourse(id);
+  editCourse(id?: number): void {
+    this.router.navigate([ `courses/${id}` ]);
   }
 
-  saveCourse(course: Course): void {
-    console.log(`Saving course ${JSON.stringify(course)}`);
-    // TODO: this.coursesService.saveCourse(course);
-    this.coursesService.cancel();
-  }
-
-  cancelEdit(): void {
-    this.coursesService.cancel();
+  createCourse(): void {
+    this.router.navigate([ `courses/new` ]);
   }
 
   private fetchCourses() {
@@ -96,12 +92,6 @@ export class CoursesComponent implements OnInit, OnDestroy {
       courseDate: this.outdatedTime,
       pageSize: this.pageSize,
       pageIndex: this.pageIndex,
-    });
-  }
-
-  private showNotification(message: string) {
-    this.snackBar.open(message, '', {
-      duration: 1000,
     });
   }
 }
