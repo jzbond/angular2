@@ -1,10 +1,12 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
 import { AuthorizationService } from '../../../services/auth/authorization.service';
-import { User } from '../../../services/auth/user';
+import { LogoutUser, RestoreUser } from '../../../services/auth/authorization.action';
+import { User } from '../../../services/profile/user';
+import { AppState, selectUserProfile } from '../../../app.reducers';
 
 @Component({
   selector: 'app-header',
@@ -17,15 +19,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   profile: Observable<User>;
 
-  constructor(private authService: AuthorizationService, private router: Router) {
+  constructor(private authService: AuthorizationService, private store: Store<AppState>) {
   }
 
   ngOnInit() {
-    this.profile = this.authService.profile;
-    this.logoutSubscription = this.authService.userLogout.subscribe(() => {
-      this.router.navigate([ '/login' ]);
-    });
-    this.authService.init();
+    this.profile = this.store.pipe(select(selectUserProfile));
+    this.store.dispatch(new RestoreUser());
   }
 
   ngOnDestroy() {
@@ -33,6 +32,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   logout(login: string): void {
-    this.authService.logout(login);
+    this.store.dispatch(new LogoutUser(login));
   }
 }

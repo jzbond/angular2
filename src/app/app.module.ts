@@ -17,6 +17,8 @@ import { AuthorizationService } from './services/auth/authorization.service';
 import { AuthorizationInterceptor } from './services/auth/authorization.interceptor';
 import { AuthorizedGuard } from './services/auth/authorized.guard';
 import { NotificationService } from './services/notification/notification.service';
+import { AppStoreModule } from './app-store.module';
+import { ProfileService } from './services/profile/profile.service';
 
 @NgModule({
   declarations: [
@@ -35,11 +37,13 @@ import { NotificationService } from './services/notification/notification.servic
     CoursesModule,
     AppRoutingModule,
     HeaderModule,
+    AppStoreModule,
   ],
   providers: [
     AuthorizationService,
     AuthorizedGuard,
     { provide: HTTP_INTERCEPTORS, useClass: AuthorizationInterceptor, multi: true },
+    ProfileService,
     NotificationService,
   ],
   bootstrap: [ AppComponent ]

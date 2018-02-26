@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { User } from '../../../services/auth/user';
+import { User } from '../../../services/profile/user';
 
 @Component({
   selector: 'user-info',
