@@ -8,7 +8,7 @@ const emptyProfile: ProfileState = {
   },
 };
 
-export function profileReducer(state: ProfileState = emptyProfile, action: ProfileAction) {
+export function profileReducer(state: ProfileState = emptyProfile, action: ProfileAction): ProfileState {
   switch (action.type) {
     case ProfileActionType.USER:
       return {

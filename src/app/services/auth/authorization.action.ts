@@ -9,10 +9,10 @@ export interface AuthorizedState {
 }
 
 export enum AuthorizationActionType {
-  RESTORE = 'Restore',
-  LOGIN = 'Login',
-  AUTHORIZE = 'Authorize',
-  LOGOUT = 'Logout',
+  RESTORE = '[Authorization] Restore Credentials',
+  LOGIN = '[Authorization] Login User',
+  AUTHORIZE = '[Authorization] Authorize User',
+  LOGOUT = '[Authorization] Logout User',
 }
 
 export type AuthorizationAction = RestoreUser | LoginUser | AuthorizeUser | LogoutUser;

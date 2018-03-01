@@ -7,7 +7,7 @@ const defaultState: AuthorizedState = {
   },
 };
 
-export function authorizationReducer(state: AuthorizedState = defaultState, action: AuthorizationAction) {
+export function authorizationReducer(state: AuthorizedState = defaultState, action: AuthorizationAction): AuthorizedState {
   switch (action.type) {
     case AuthorizationActionType.AUTHORIZE:
       return {

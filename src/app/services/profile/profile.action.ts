@@ -8,8 +8,8 @@ export interface ProfileState {
 }
 
 export enum ProfileActionType {
-  USER = 'Profile',
-  NO_PROFILE = 'No user',
+  USER = '[Profile] User Profile',
+  NO_PROFILE = '[Profile] No Profile',
 }
 
 export type ProfileAction = UserProfile | NoProfile;

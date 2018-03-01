@@ -5,13 +5,15 @@ import { map, mergeMap } from 'rxjs/operators';
 import { AuthorizationActionType, AuthorizeUser, LoginUser, LogoutUser } from './authorization.action';
 import { AuthorizationService } from './authorization.service';
 import { NoProfile } from '../profile/profile.action';
+import { Action } from '@ngrx/store';
+import { Observable } from 'rxjs/Observable';
 
 
 @Injectable()
 export class AuthorizationEffect {
 
   @Effect()
-  restore = this.actions.pipe(
+  restore: Observable<Action> = this.actions.pipe(
     ofType(AuthorizationActionType.RESTORE),
     mergeMap(() => {
       return this.authorizationService.restoreAuthorizedUser().pipe(
@@ -26,7 +28,7 @@ export class AuthorizationEffect {
   );
 
   @Effect()
-  login = this.actions.pipe(
+  login: Observable<Action> = this.actions.pipe(
     ofType(AuthorizationActionType.LOGIN),
     mergeMap((loginAction: LoginUser) => {
       return this.authorizationService.login(loginAction.login).pipe(
@@ -36,7 +38,7 @@ export class AuthorizationEffect {
   );
 
   @Effect()
-  logout = this.actions.pipe(
+  logout: Observable<Action> = this.actions.pipe(
     ofType(AuthorizationActionType.LOGOUT),
     mergeMap((logoutAction: LogoutUser) => {
       return this.authorizationService.logout(logoutAction.login).pipe(
