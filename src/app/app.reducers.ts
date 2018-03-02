@@ -2,28 +2,38 @@ import { ActionReducerMap, createSelector } from '@ngrx/store';
 
 import { AuthorizedState } from './services/auth/authorization.action';
 import { ProfileState } from './services/profile/profile.action';
+import { SelectedCourseState } from './services/courses/course.action';
 import { authorizationReducer } from './services/auth/authorization.reducer';
 import { profileReducer } from './services/profile/profile.reducer';
+import { selectedCourseReducer } from './services/courses/course.reducer';
 import { AuthorizationEffect } from './services/auth/authorization.effect';
 import { ProfileEffect } from './services/profile/profile.effect';
+import { CourseEffect } from './services/courses/course.effect';
+import { CoursesEffect } from './services/courses/courses.effect';
 
 export interface AppState {
   authorized: AuthorizedState;
   profile: ProfileState
+  selectedCourse: SelectedCourseState,
 }
 
 export const appReducers: ActionReducerMap<AppState> = {
   authorized: authorizationReducer,
   profile: profileReducer,
+  selectedCourse: selectedCourseReducer,
 };
 
 export const appEffects = [
   AuthorizationEffect,
   ProfileEffect,
+  CourseEffect,
+  CoursesEffect,
 ];
 
-const selectAuthorized = (state: AppState) => state.authorized;
-const selectProfile = (state: AppState) => state.profile;
-export const selectIsAuthorized = createSelector(selectAuthorized, (state: AuthorizedState) => state.token);
-export const selectUserProfile = createSelector(selectProfile, (state: ProfileState) => state.profile);
+const selectAuthorizedState = (state: AppState) => state.authorized;
+const selectProfileState = (state: AppState) => state.profile;
+const selectCourseState = (state: AppState) => state.selectedCourse;
+export const selectIsAuthorized = createSelector(selectAuthorizedState, (state: AuthorizedState) => state.token);
+export const selectUserProfile = createSelector(selectProfileState, (state: ProfileState) => state.profile);
+export const selectCourse = createSelector(selectCourseState, (state: SelectedCourseState) => state.course);
 

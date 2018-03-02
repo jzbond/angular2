@@ -1,15 +1,14 @@
 import { Injectable } from '@angular/core';
-import { Course } from './course';
-import * as moment from 'moment';
-import { Observable } from 'rxjs/Observable';
-import { filter, map, mergeMap, switchMap } from 'rxjs/operators';
-import { Subject } from 'rxjs/Subject';
 import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Observable } from 'rxjs/Observable';
+import { filter, map, switchMap } from 'rxjs/operators';
+import { of as observableOf } from 'rxjs/observable/of';
+import * as moment from 'moment';
+
+import { Course } from './course';
 import { CoursesPage } from './courses-page';
 import { CoursesQueryParams } from './courses-query-params';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { of } from 'rxjs/observable/of';
-import { ReplaySubject } from 'rxjs/ReplaySubject';
 
 
 @Injectable()
@@ -23,9 +22,6 @@ export class CoursesService {
     pageSize: 2,
     pageIndex: 0,
   });
-  private selectedCourseSubject = new ReplaySubject<number | null>(0);
-  private deletedCourseSubject = new Subject<number>();
-  private savedCourseSubject = new Subject<Course>();
 
   public readonly coursesList: Observable<CoursesPage> = this.querySubject.asObservable()
     .pipe(
@@ -67,63 +63,6 @@ export class CoursesService {
         )),
     );
 
-  public readonly selectedCourse: Observable<Course> = this.selectedCourseSubject.asObservable()
-    .pipe(
-      switchMap((id: number) => {
-        if (id === -1) {
-          return of({
-            name: '',
-            description: '',
-            type: '',
-            date: moment(0).toDate(),
-            durationInSeconds: 0,
-            topRated: false,
-          });
-        } else {
-          return this.httpClient.get<Course>(`${CoursesService.SERVER_BASE_URL}/courses/${id}`);
-        }
-      }),
-    );
-
-  public readonly savedCourse: Observable<string> = this.savedCourseSubject.asObservable()
-    .pipe(
-      mergeMap((course: Course) => {
-        let method = 'POST';
-        let url = `${CoursesService.SERVER_BASE_URL}/courses`;
-        if (course.id && course.id > -1) {
-          method = 'PUT';
-          url = `${url}/${course.id}`;
-        }
-        return this.httpClient.request<Course>(
-          method,
-          url,
-          {
-            body: course,
-            headers: new HttpHeaders().set('Content-Type', 'application/json'),
-            observe: 'response',
-          }).pipe(
-          map((response: HttpResponse<Course>) => {
-            this.querySubject.next(this.querySubject.getValue());
-            return response.body!.name;
-          }),
-        );
-      }),
-    );
-
-  public readonly deletedCourse: Observable<string> = this.deletedCourseSubject.asObservable()
-    .pipe(
-      mergeMap((id: number) => this.httpClient
-        .delete<Course>(
-          `${CoursesService.SERVER_BASE_URL}/courses/${id}`,
-        ).pipe(
-          map(deletedCourse => {
-            this.querySubject.next(this.querySubject.getValue());
-            return deletedCourse.name;
-          }),
-        )
-      ),
-    );
-
   constructor(private readonly httpClient: HttpClient) {
   }
 
@@ -131,15 +70,46 @@ export class CoursesService {
     this.querySubject.next(query);
   }
 
-  public selectCourse(id?: number): void {
-    this.selectedCourseSubject.next(id || -1);
+  public selectCourse(id?: number): Observable<Course> {
+    if (id) {
+      return this.httpClient.get<Course>(`${CoursesService.SERVER_BASE_URL}/courses/${id}`);
+    } else {
+      return observableOf({
+        name: '',
+        description: '',
+        type: '',
+        date: moment(0).toDate(),
+        durationInSeconds: 0,
+        topRated: false,
+      });
+    }
   }
 
-  public saveCourse(course: Course): void {
-    this.savedCourseSubject.next(course);
+  public saveCourse(course: Course): Observable<Course> {
+    let method = 'POST';
+    let url = `${CoursesService.SERVER_BASE_URL}/courses`;
+    if (course.id && course.id > -1) {
+      method = 'PUT';
+      url = `${url}/${course.id}`;
+    }
+    return this.httpClient.request<Course>(
+      method,
+      url,
+      {
+        body: course,
+        headers: new HttpHeaders().set('Content-Type', 'application/json'),
+        observe: 'response',
+      }).pipe(
+      map((response: HttpResponse<Course>) => {
+        return response.body!;
+      }),
+    );
   }
 
-  public removeCourse(id: number): void {
-    this.deletedCourseSubject.next(id);
+  public removeCourse(id: number): Observable<Course> {
+    return this.httpClient
+      .delete<Course>(
+        `${CoursesService.SERVER_BASE_URL}/courses/${id}`,
+      );
   }
 }

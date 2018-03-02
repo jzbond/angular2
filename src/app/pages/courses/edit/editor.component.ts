@@ -1,12 +1,12 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
-import { takeUntil } from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
 
-import { CoursesService } from '../../../services/courses/courses.service';
-import { NotificationService } from '../../../services/notification/notification.service';
 import { Course } from '../../../services/courses/course';
+import { SaveCourse } from '../../../services/courses/course.action';
+import { AppState, selectCourse } from '../../../app.reducers';
+import { ListCourses } from '../../../services/courses/courses.action';
 
 @Component({
   selector: 'course-editor',
@@ -14,40 +14,25 @@ import { Course } from '../../../services/courses/course';
   styleUrls: [ './editor.component.css' ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class EditorComponent implements OnInit, OnDestroy {
+export class EditorComponent implements OnInit {
 
   course: Observable<Course>;
 
-  private subscriptions = new Subject<any>();
-
-  constructor(private coursesService: CoursesService,
-              private route: ActivatedRoute,
-              private router: Router,
-              private notification: NotificationService,) {
+  constructor(private store: Store<AppState>) {
   }
 
   ngOnInit() {
-    this.course = this.coursesService.selectedCourse;
-    this.coursesService.savedCourse.pipe(takeUntil(this.subscriptions)).subscribe(name => {
-      this.notification.show(`Saved ${name} course`);
-      this.router.navigate([ '/courses' ]);
-    });
-    const courseId = this.route.snapshot.paramMap.has('id')
-      ? Number(this.route.snapshot.paramMap.get('id'))
-      : undefined;
-    this.coursesService.selectCourse(courseId);
-  }
-
-  ngOnDestroy(): void {
-    this.subscriptions.next();
-    this.subscriptions.unsubscribe();
+    this.course = this.store.pipe(
+      select(selectCourse),
+      filter((course: Course) => course != null),
+    );
   }
 
   saveCourse(course: Course) {
-    this.coursesService.saveCourse(course);
+    this.store.dispatch(new SaveCourse(course));
   }
 
   discard() {
-    this.router.navigate([ '/courses' ]);
+    this.store.dispatch(new ListCourses());
   }
 }
