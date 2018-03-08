@@ -17,7 +17,14 @@ export enum CourseActionType {
   DELETED = '[Courses] Deleted',
 }
 
-export type CourseAction = SelectCourse | NewCourse | EditCourse | SaveCourse | SavedCourse | DeleteCourse | DeletedCourse;
+export type CourseAction =
+  SelectCourse
+  | NewCourse
+  | EditCourse
+  | SaveCourse
+  | SavedCourse
+  | DeleteCourse
+  | DeletedCourse;
 
 export class SelectCourse implements Action {
   readonly type = CourseActionType.SELECT;
@@ -61,6 +68,6 @@ export class DeleteCourse implements Action {
 export class DeletedCourse implements Action {
   readonly type = CourseActionType.DELETED;
 
-  constructor(public course: Course) {
+  constructor(public courseId: number) {
   }
 }

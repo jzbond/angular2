@@ -1,15 +1,23 @@
 import { Injectable } from '@angular/core';
-import { Actions, Effect, ofType } from '@ngrx/effects';
-import { map, mergeMap, switchMap, tap } from 'rxjs/operators';
-import { of as observableOf } from 'rxjs/observable/of';
-
-import { CourseActionType, DeleteCourse, DeletedCourse, EditCourse, SaveCourse, SavedCourse, SelectCourse } from './course.action';
-import { ListCourses } from './courses.action';
-import { CoursesService } from './courses.service';
-import { NotificationService } from '../notification/notification.service';
 import { Router } from '@angular/router';
 import { Action } from '@ngrx/store';
+import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Observable } from 'rxjs/Observable';
+import { map, mapTo, mergeMap, switchMap } from 'rxjs/operators';
+import { of as observableOf } from 'rxjs/observable/of';
+
+import {
+  CourseActionType,
+  DeleteCourse,
+  DeletedCourse,
+  EditCourse,
+  SaveCourse,
+  SavedCourse,
+  SelectCourse
+} from './course.action';
+import { CoursesService } from './courses.service';
+import { NotificationService } from '../notification/notification.service';
+import { ListCourses } from './courses.list.action';
 
 @Injectable()
 export class CourseEffect {
@@ -64,7 +72,7 @@ export class CourseEffect {
     ofType(CourseActionType.DELETE),
     mergeMap((deleteAction: DeleteCourse) => {
       return this.coursesService.removeCourse(deleteAction.courseId).pipe(
-        map(course => new DeletedCourse(course)),
+        mapTo(new DeletedCourse(deleteAction.courseId)),
       );
     }),
   );
@@ -73,7 +81,7 @@ export class CourseEffect {
   deletedCourse: Observable<Action> = this.actions.pipe(
     ofType(CourseActionType.DELETED),
     switchMap((deletedAction: DeletedCourse) => {
-      this.notificationService.show(`Deleted ${deletedAction.course.name} course`);
+      this.notificationService.show(`Deleted course #${deletedAction.courseId}`);
       return observableOf(new ListCourses());
     }),
   );

@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
-import { filter, map, switchMap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { of as observableOf } from 'rxjs/observable/of';
 import * as moment from 'moment';
 
@@ -16,58 +15,45 @@ export class CoursesService {
 
   private static readonly SERVER_BASE_URL: String = 'http://localhost:3000';
 
-  private querySubject = new BehaviorSubject<CoursesQueryParams>({
-    courseName: '',
-    courseDate: moment(0),
-    pageSize: 2,
-    pageIndex: 0,
-  });
-
-  public readonly coursesList: Observable<CoursesPage> = this.querySubject.asObservable()
-    .pipe(
-      filter(query => query.courseName.length === 0 || query.courseName.length > 2),
-      map(query => new HttpParams()
-        .set('date_gte', query.courseDate.format('YYYY-MM-DD'))
-        .set('name_like', query.courseName)
-        .set('_limit', String(query.pageSize))
-        .set('_page', String(query.pageIndex + 1))
-        .set('_sort', 'date')
-        .set('_order', 'desc')
-      ),
-      switchMap((params: HttpParams) => this.httpClient
-        .get<Course[]>(
-          `${CoursesService.SERVER_BASE_URL}/courses`,
-          {
-            observe: 'response',
-            responseType: 'json',
-            params,
-          }
-        ).pipe(
-          map((response: HttpResponse<Course[]>) => {
-            const courses = response.body!.map(course => {
-              return {
-                id: course.id,
-                name: course.name,
-                description: course.description,
-                type: course.type,
-                date: moment(course.date).toDate(),
-                durationInSeconds: course.durationInSeconds,
-                topRated: course.topRated,
-              };
-            });
-            return {
-              totalNumber: parseInt(response.headers.get('X-Total-Count')!) || 0,
-              courses: courses,
-            };
-          }),
-        )),
-    );
-
   constructor(private readonly httpClient: HttpClient) {
   }
 
-  public fetchCourses(query: CoursesQueryParams): void {
-    this.querySubject.next(query);
+  public fetchCourses(query: CoursesQueryParams): Observable<CoursesPage> {
+    const listHttpParams: HttpParams = new HttpParams()
+      .set('date_gte', query.courseDate.format('YYYY-MM-DD'))
+      .set('name_like', query.courseName)
+      .set('_limit', String(query.pageSize))
+      .set('_page', String(query.pageIndex + 1))
+      .set('_sort', 'date')
+      .set('_order', 'desc');
+    return this.httpClient
+      .get<Course[]>(
+        `${CoursesService.SERVER_BASE_URL}/courses`,
+        {
+          observe: 'response',
+          responseType: 'json',
+          params: listHttpParams,
+        }
+      ).pipe(
+        map((response: HttpResponse<Course[]>) => {
+          return {
+            totalNumber: parseInt(response.headers.get('X-Total-Count')!) || 0,
+            courses: response.body!.map(CoursesService.convertToCourse),
+          };
+        }),
+      );
+  }
+
+  private static convertToCourse(course: Course): Course {
+    return {
+      id: course.id,
+      name: course.name,
+      description: course.description,
+      type: course.type,
+      date: moment(course.date).toDate(),
+      durationInSeconds: course.durationInSeconds,
+      topRated: course.topRated,
+    };
   }
 
   public selectCourse(id?: number): Observable<Course> {

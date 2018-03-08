@@ -4,12 +4,14 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { AngularMaterialsModule } from '../../../angular-materials.module';
+import { StoreModule } from '@ngrx/store';
 
 import { EditorComponent } from './editor.component';
 import { EditComponent } from './edit.component';
 import { DurationPipe } from '../course/duration.pipe';
 import { CoursesService } from '../../../services/courses/courses.service';
 import { NotificationService } from '../../../services/notification/notification.service';
+import { selectedCourseReducer } from '../../../services/courses/course.reducer';
 
 describe('EditorComponent', () => {
   let component: EditorComponent;
@@ -18,7 +20,14 @@ describe('EditorComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
         declarations: [ EditComponent, DurationPipe, EditorComponent],
-        imports: [ AngularMaterialsModule, NoopAnimationsModule, ReactiveFormsModule, HttpClientTestingModule, RouterTestingModule ],
+        imports: [
+          AngularMaterialsModule,
+          NoopAnimationsModule,
+          ReactiveFormsModule,
+          HttpClientTestingModule,
+          RouterTestingModule,
+          StoreModule.forRoot({ selectedCourse: selectedCourseReducer, }),
+        ],
         providers: [ CoursesService, NotificationService ],
     })
     .compileComponents();

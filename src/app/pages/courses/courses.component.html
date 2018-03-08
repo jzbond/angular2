@@ -4,7 +4,7 @@
     <course-card *ngFor="let course of coursesPage.courses | orderByDate; trackBy: trackById;" [course]="course"
                  (delete)="deleteCourse($event)" (edit)="editCourse($event.id)"></course-card>
     <mat-paginator [length]="coursesPage.totalNumber"
-                   [pageIndex]="pageIndex"
+                   [pageIndex]="0"
                    [pageSize]="2"
                    [pageSizeOptions]="[1, 2, 3, 10]"
                    (page)="showPage($event)">

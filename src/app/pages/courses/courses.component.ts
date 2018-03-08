@@ -1,9 +1,9 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, PageEvent } from '@angular/material';
-import { Store } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 import * as moment from 'moment';
-import { Moment } from 'moment';
 
 import { CoursesService } from '../../services/courses/courses.service';
 import { NotificationService } from '../../services/notification/notification.service';
@@ -11,7 +11,14 @@ import { Course } from '../../services/courses/course';
 import { CoursesConfirmationDialogComponent } from './courses-confirmation-dialog.component';
 import { CoursesPage } from '../../services/courses/courses-page';
 import { DeleteCourse, NewCourse, SelectCourse } from '../../services/courses/course.action';
-import { AppState } from '../../app.reducers';
+import { AppState, selectCoursesList, selectCoursesQueryParams } from '../../app.reducers';
+import {
+  CoursesListPage,
+  FetchCoursesList,
+  FilterCoursesListByDate,
+  FilterCoursesListByName,
+} from '../../services/courses/courses.list.action';
+import { CoursesQueryParams } from '../../services/courses/courses-query-params';
 
 @Component({
   selector: 'courses-list',
@@ -19,29 +26,28 @@ import { AppState } from '../../app.reducers';
   styleUrls: [ './courses.component.css' ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CoursesComponent implements OnInit {
+export class CoursesComponent implements OnInit, OnDestroy {
 
   coursesPage: Observable<CoursesPage>;
-  pageIndex: number;
-
-  private outdatedTime: Moment;
-  private courseName: string;
-  private pageSize: number;
-
+  private subscription: Subscription;
 
   constructor(private dialog: MatDialog,
               private notification: NotificationService,
               private coursesService: CoursesService,
               private store: Store<AppState>,) {
-    this.outdatedTime = moment().subtract(14, 'd');
-    this.courseName = '';
-    this.pageSize = 2;
-    this.pageIndex = 0;
-    this.coursesPage = coursesService.coursesList;
+    this.coursesPage = this.store.pipe(select(selectCoursesList));
   }
 
   ngOnInit() {
-    this.fetchCourses();
+    this.store.dispatch(new FilterCoursesListByDate(moment().subtract(14, 'd')));
+
+    this.subscription = this.store.pipe(select(selectCoursesQueryParams)).subscribe((params: CoursesQueryParams) => {
+      this.store.dispatch(new FetchCoursesList(params));
+    });
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
   trackById(index: number, course: Course): number {
@@ -56,20 +62,17 @@ export class CoursesComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.store.dispatch(new DeleteCourse($event.id));
+        this.store.dispatch(new FilterCoursesListByName(''));
       }
     });
   }
 
   findCourses(courseName: string): void {
-    this.courseName = courseName;
-    this.pageIndex = 0;
-    this.fetchCourses();
+    this.store.dispatch(new FilterCoursesListByName(courseName));
   }
 
   showPage(page: PageEvent) {
-    this.pageIndex = page.pageIndex;
-    this.pageSize = page.pageSize;
-    this.fetchCourses();
+    this.store.dispatch(new CoursesListPage(page.pageIndex, page.pageSize));
   }
 
   editCourse(id: number): void {
@@ -78,14 +81,5 @@ export class CoursesComponent implements OnInit {
 
   createCourse(): void {
     this.store.dispatch(new NewCourse());
-  }
-
-  private fetchCourses() {
-    this.coursesService.fetchCourses({
-      courseName: this.courseName,
-      courseDate: this.outdatedTime,
-      pageSize: this.pageSize,
-      pageIndex: this.pageIndex,
-    });
   }
 }
