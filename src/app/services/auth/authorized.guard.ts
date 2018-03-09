@@ -1,16 +1,23 @@
-import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
-import { AuthorizationService } from './authorization.service';
+import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from '@angular/router';
 import { Injectable } from '@angular/core';
+import { select, Store } from '@ngrx/store';
+
+import { AppState, selectIsAuthorized } from '../../app.reducers';
+import { Token } from './token';
+import { NoProfile } from '../profile/profile.action';
 
 @Injectable()
 export class AuthorizedGuard implements CanActivate {
 
-  constructor(private authService: AuthorizationService, private router: Router) {
+  private token: Token;
+
+  constructor(private store: Store<AppState>) {
+    this.store.pipe(select(selectIsAuthorized)).subscribe(token => this.token = token);
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    if (!this.authService.isAuthenticated()) {
-      this.router.navigate([ '/login' ]);
+    if (this.token.id === '') {
+      this.store.dispatch(new NoProfile());
     }
     return true;
   }

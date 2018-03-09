@@ -2,24 +2,31 @@ import { inject, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { HttpClient } from '@angular/common/http';
 
-import { AuthorizationService } from './authorization.service';
-import { Token } from './token';
+import { ProfileService } from './profile.service';
+import { User } from './user';
+import { Token } from '../auth/token';
 
 describe('AuthorizationService', () => {
   let token: Token;
+  let profile: User;
   let httpClient: HttpClient;
   let httpTestingController: HttpTestingController;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ HttpClientTestingModule ],
-      providers: [ AuthorizationService ]
+      providers: [ ProfileService ]
     });
     httpClient = TestBed.get(HttpClient);
     httpTestingController = TestBed.get(HttpTestingController);
     token = {
       id: 'test',
       token: 'test_token'
+    };
+    profile = {
+      id: 'test',
+      name: 'name',
+      surname: 'surname',
     };
   });
 
@@ -28,15 +35,16 @@ describe('AuthorizationService', () => {
     httpTestingController.verify();
   });
 
-  it('should be created', inject([ AuthorizationService ], (service: AuthorizationService) => {
+  it('should be created', inject([ ProfileService ], (service: ProfileService) => {
     expect(service).toBeTruthy();
   }));
 
-  it('should authenticate user on login', inject([ AuthorizationService ], (service: AuthorizationService) => {
-    service.login({ login: 'test', password: 'secret' }).subscribe(authToken => expect(authToken).toEqual(token));
+  it('should read profile', inject([ ProfileService ], (service: ProfileService) => {
+    service.readProfile(token).subscribe(userProfile => expect(userProfile).toEqual(profile));
 
-    const authRequest = httpTestingController.expectOne('http://localhost:3000/login/test');
-    expect(authRequest.request.method).toEqual('GET');
-    authRequest.flush(token);
+    const profileRequest = httpTestingController.expectOne('http://localhost:3000/profiles/test');
+    expect(profileRequest.request.method).toEqual('GET');
+    profileRequest.flush(profile);
   }));
+
 });

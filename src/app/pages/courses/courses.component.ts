@@ -1,17 +1,24 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { MatDialog, PageEvent } from '@angular/material';
+import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
-import { takeUntil } from 'rxjs/operators';
+import { Subscription } from 'rxjs/Subscription';
 import * as moment from 'moment';
-import { Moment } from 'moment';
 
 import { CoursesService } from '../../services/courses/courses.service';
 import { NotificationService } from '../../services/notification/notification.service';
 import { Course } from '../../services/courses/course';
 import { CoursesConfirmationDialogComponent } from './courses-confirmation-dialog.component';
 import { CoursesPage } from '../../services/courses/courses-page';
+import { DeleteCourse, NewCourse, SelectCourse } from '../../services/courses/course.action';
+import { AppState, selectCoursesList, selectCoursesQueryParams } from '../../app.reducers';
+import {
+  CoursesListPage,
+  FetchCoursesList,
+  FilterCoursesListByDate,
+  FilterCoursesListByName,
+} from '../../services/courses/courses.list.action';
+import { CoursesQueryParams } from '../../services/courses/courses-query-params';
 
 @Component({
   selector: 'courses-list',
@@ -22,32 +29,25 @@ import { CoursesPage } from '../../services/courses/courses-page';
 export class CoursesComponent implements OnInit, OnDestroy {
 
   coursesPage: Observable<CoursesPage>;
-  selectedCourse: Observable<Course | null>;
-  pageIndex: number;
+  private subscription: Subscription;
 
-  private subscriptions: Subject<boolean> = new Subject();
-  private outdatedTime: Moment;
-  private courseName: string;
-  private pageSize: number;
-
-
-  constructor(private dialog: MatDialog, private notification: NotificationService, private coursesService: CoursesService, private router: Router) {
-    this.outdatedTime = moment().subtract(14, 'd');
-    this.courseName = '';
-    this.pageSize = 2;
-    this.pageIndex = 0;
-    this.coursesPage = coursesService.coursesList;
+  constructor(private dialog: MatDialog,
+              private notification: NotificationService,
+              private coursesService: CoursesService,
+              private store: Store<AppState>,) {
+    this.coursesPage = this.store.pipe(select(selectCoursesList));
   }
 
   ngOnInit() {
-    this.fetchCourses();
-    this.coursesService.deletedCourse.pipe(takeUntil(this.subscriptions)).subscribe(() => this.notification.show(`Deleted course`));
-    this.selectedCourse = this.coursesService.selectedCourse;
+    this.store.dispatch(new FilterCoursesListByDate(moment().subtract(14, 'd')));
+
+    this.subscription = this.store.pipe(select(selectCoursesQueryParams)).subscribe((params: CoursesQueryParams) => {
+      this.store.dispatch(new FetchCoursesList(params));
+    });
   }
 
   ngOnDestroy() {
-    this.subscriptions.next();
-    this.subscriptions.unsubscribe();
+    this.subscription.unsubscribe();
   }
 
   trackById(index: number, course: Course): number {
@@ -61,37 +61,25 @@ export class CoursesComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.coursesService.removeCourse($event.id);
+        this.store.dispatch(new DeleteCourse($event.id));
+        this.store.dispatch(new FilterCoursesListByName(''));
       }
     });
   }
 
   findCourses(courseName: string): void {
-    this.courseName = courseName;
-    this.pageIndex = 0;
-    this.fetchCourses();
+    this.store.dispatch(new FilterCoursesListByName(courseName));
   }
 
   showPage(page: PageEvent) {
-    this.pageIndex = page.pageIndex;
-    this.pageSize = page.pageSize;
-    this.fetchCourses();
+    this.store.dispatch(new CoursesListPage(page.pageIndex, page.pageSize));
   }
 
-  editCourse(id?: number): void {
-    this.router.navigate([ `courses/${id}` ]);
+  editCourse(id: number): void {
+    this.store.dispatch(new SelectCourse(id));
   }
 
   createCourse(): void {
-    this.router.navigate([ `courses/new` ]);
-  }
-
-  private fetchCourses() {
-    this.coursesService.fetchCourses({
-      courseName: this.courseName,
-      courseDate: this.outdatedTime,
-      pageSize: this.pageSize,
-      pageIndex: this.pageIndex,
-    });
+    this.store.dispatch(new NewCourse());
   }
 }
